@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explain It In Pizza 🍕 — AI Concepts, Pizza Style</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700;800&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f0f1e;
+    --navy-mid: #1a1a2e;
+    --navy-light: #252540;
+    --orange: #ff6b35;
+    --orange-glow: #ff8c55;
+    --red: #e63946;
+    --yellow: #ffd166;
+    --yellow-soft: #ffe599;
+    --cream: #fff8f0;
+    --text-muted: #8888aa;
+    --card-bg: #1e1e38;
+    --card-border: #2e2e52;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--navy);
+    color: var(--cream);
+    font-family: 'Nunito', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Starfield background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 45% 60%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 10%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 90%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(2px 2px at 60% 35%, rgba(255,209,102,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 10% 70%, rgba(255,107,53,0.15) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,107,53,0.12) 0%, rgba(230,57,70,0.06) 40%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .floating-pizzas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .fp {
+    position: absolute;
+    font-size: 2rem;
+    opacity: 0.15;
+    animation: floatUp linear infinite;
+    user-select: none;
+  }
+  .fp:nth-child(1)  { left: 5%;  font-size: 1.5rem; animation-duration: 18s; animation-delay: 0s;    }
+  .fp:nth-child(2)  { left: 15%; font-size: 2.5rem; animation-duration: 22s; animation-delay: -4s;   }
+  .fp:nth-child(3)  { left: 28%; font-size: 1.2rem; animation-duration: 16s; animation-delay: -8s;   }
+  .fp:nth-child(4)  { left: 42%; font-size: 3rem;   animation-duration: 25s; animation-delay: -12s;  }
+  .fp:nth-child(5)  { left: 58%; font-size: 1.8rem; animation-duration: 20s; animation-delay: -3s;   }
+  .fp:nth-child(6)  { left: 70%; font-size: 2.2rem; animation-duration: 19s; animation-delay: -9s;   }
+  .fp:nth-child(7)  { left: 82%; font-size: 1.4rem; animation-duration: 23s; animation-delay: -6s;   }
+  .fp:nth-child(8)  { left: 92%; font-size: 2.8rem; animation-duration: 17s; animation-delay: -14s;  }
+
+  @keyframes floatUp {
+    0%   { transform: translateY(110vh) rotate(0deg);   opacity: 0;    }
+    10%  { opacity: 0.15; }
+    90%  { opacity: 0.15; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0;    }
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,107,53,0.15);
+    border: 1px solid rgba(255,107,53,0.4);
+    color: var(--orange-glow);
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.4rem 1.2rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+    animation: fadeSlideDown 0.8s ease both;
+  }
+
+  .hero-title {
+    font-family: 'Pacifico', cursive;
+    font-size: clamp(2.8rem, 8vw, 6rem);
+    line-height: 1.1;
+    color: var(--cream);
+    text-shadow:
+      0 0 40px rgba(255,107,53,0.4),
+      0 0 80px rgba(255,107,53,0.15);
+    animation: fadeSlideDown 0.8s ease 0.15s both;
+    margin-bottom: 1rem;
+  }
+
+  .hero-title .pizza-icon {
+    display: inline-block;
+    animation: spin 8s linear infinite;
+    transform-origin: center;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  .hero-tagline {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+    color: var(--yellow);
+    opacity: 0.9;
+    animation: fadeSlideDown 0.8s ease 0.3s both;
+    margin-bottom: 0.6rem;
+  }
+
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--text-muted);
+    animation: fadeSlideDown 0.8s ease 0.45s both;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    animation: fadeSlideDown 0.8s ease 0.6s both;
+    margin-bottom: 3rem;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2rem;
+    color: var(--orange);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .scroll-hint {
+    animation: fadeSlideDown 0.8s ease 0.75s both, bobble 2s ease-in-out 1.5s infinite;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .scroll-arrow {
+    width: 24px;
+    height: 24px;
+    border-right: 2px solid var(--orange);
+    border-bottom: 2px solid var(--orange);
+    transform: rotate(45deg);
+    opacity: 0.6;
+  }
+
+  @keyframes bobble {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(6px); }
+  }
+
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---- EPISODES ---- */
+  .episodes-section {
+    position: relative;
+    z-index: 1;
+    padding: 5rem 2rem 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--orange);
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-title {
+    font-family: 'Pacifico', cursive;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    text-align: center;
+    color: var(--cream);
+    margin-bottom: 3.5rem;
+  }
+
+  .episodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .ep-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1.8rem;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  .ep-card.visible {
+    animation: cardReveal 0.5s ease forwards;
+  }
+
+  @keyframes cardReveal {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .ep-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top left, rgba(255,107,53,0.08) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .ep-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(255,107,53,0.15), 0 0 0 1px rgba(255,107,53,0.3);
+    border-color: rgba(255,107,53,0.5);
+  }
+
+  .ep-card:hover::before {
+    opacity: 1;
+  }
+
+  .ep-number {
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--orange);
+    opacity: 0.7;
+  }
+
+  .ep-emoji {
+    font-size: 2.4rem;
+    line-height: 1;
+    filter: drop-shadow(0 2px 8px rgba(255,107,53,0.3));
+  }
+
+  .ep-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    color: var(--cream);
+    line-height: 1.2;
+  }
+
+  .ep-topic {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .ep-hook {
+    font-size: 0.9rem;
+    color: #aaaacc;
+    line-height: 1.5;
+    font-style: italic;
+    flex-grow: 1;
+  }
+
+  .ep-hook::before { content: '"'; }
+  .ep-hook::after  { content: '"'; }
+
+  .ep-arrow {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.85rem;
+    color: var(--orange);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    margin-top: 0.4rem;
+  }
+
+  .ep-card:hover .ep-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Card accent colors per episode */
+  .ep-card:nth-child(1) { --ep-color: #ff6b35; }
+  .ep-card:nth-child(2) { --ep-color: #ffd166; }
+  .ep-card:nth-child(3) { --ep-color: #e63946; }
+  .ep-card:nth-child(4) { --ep-color: #06d6a0; }
+  .ep-card:nth-child(5) { --ep-color: #a8dadc; }
+  .ep-card:nth-child(6) { --ep-color: #ff9f1c; }
+  .ep-card:nth-child(7) { --ep-color: #c77dff; }
+  .ep-card:nth-child(8) { --ep-color: #ef233c; }
+
+  .ep-card .ep-number { color: var(--ep-color); }
+  .ep-card .ep-arrow  { color: var(--ep-color); }
+  .ep-card:hover {
+    box-shadow: 0 20px 60px rgba(var(--ep-rgb, 255,107,53),0.15), 0 0 0 1px color-mix(in srgb, var(--ep-color) 50%, transparent);
+    border-color: color-mix(in srgb, var(--ep-color) 50%, transparent);
+  }
+
+  /* ---- DIVIDER ---- */
+  .divider {
+    max-width: 1200px;
+    margin: 4rem auto;
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--card-border), transparent);
+  }
+
+  /* ---- ABOUT ---- */
+  .about-section {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 2rem 5rem;
+    text-align: center;
+  }
+
+  .about-section p {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #aaaacc;
+    margin-bottom: 1rem;
+  }
+
+  .about-section p strong {
+    color: var(--cream);
+    font-weight: 800;
+  }
+
+  /* ---- FOOTER ---- */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--card-border);
+    padding: 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .footer-logo {
+    font-family: 'Pacifico', cursive;
+    font-size: 1.2rem;
+    color: var(--cream);
+    opacity: 0.5;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .footer-links a:hover { color: var(--orange); }
+
+  .footer-copy {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    opacity: 0.5;
+  }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 600px) {
+    .hero-stats { gap: 1.2rem; }
+    .stat-num   { font-size: 1.5rem; }
+    .episodes-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="floating-pizzas">
+    <span class="fp">🍕</span>
+    <span class="fp">🍕</span>
+    <span class="fp">🍕</span>
+    <span class="fp">🍕</span>
+    <span class="fp">🍕</span>
+    <span class="fp">🍕</span>
+    <span class="fp">🍕</span>
+    <span class="fp">🍕</span>
+  </div>
+  <div style="position:relative;z-index:1">
+    <div class="hero-badge">🍕 An 8-Episode AI Series</div>
+    <h1 class="hero-title">Explain It In Pizza <span class="pizza-icon">🍕</span></h1>
+    <p class="hero-tagline">Learning AI has never been this delicious.</p>
+    <p class="hero-sub">Eight interactive episodes. Zero prerequisite knowledge. Infinite pizza.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">8</span>
+        <span class="stat-label">Episodes</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">64+</span>
+        <span class="stat-label">Sections</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">∞</span>
+        <span class="stat-label">Pizza Puns</span>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <span>Scroll to explore</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </div>
+</section>
+
+<!-- EPISODES -->
+<section class="episodes-section">
+  <div class="section-label">The Full Series</div>
+  <h2 class="section-title">Pick Your Episode</h2>
+  <div class="episodes-grid">
+
+    <a href="ep1-ml-basics/" class="ep-card">
+      <div class="ep-number">Episode 01</div>
+      <div class="ep-emoji">🔥</div>
+      <div class="ep-title">How AI Learns</div>
+      <div class="ep-topic">Training Data · Neural Networks · Backprop</div>
+      <div class="ep-hook">Every great pizza chef started by burning a few pies.</div>
+      <div class="ep-arrow">Start watching →</div>
+    </a>
+
+    <a href="ep2-transformers/" class="ep-card">
+      <div class="ep-number">Episode 02</div>
+      <div class="ep-emoji">🧠</div>
+      <div class="ep-title">The Transformer Kitchen</div>
+      <div class="ep-topic">Attention · Embeddings · Multi-Head</div>
+      <div class="ep-hook">The secret sauce behind ChatGPT, explained in toppings.</div>
+      <div class="ep-arrow">Start watching →</div>
+    </a>
+
+    <a href="ep3-finetuning/" class="ep-card">
+      <div class="ep-number">Episode 03</div>
+      <div class="ep-emoji">👨‍🍳</div>
+      <div class="ep-title">Teaching a Chef Your Style</div>
+      <div class="ep-topic">Fine-Tuning · RLHF · Alignment</div>
+      <div class="ep-hook">Take a world-class chef and train them to cook YOUR pizza.</div>
+      <div class="ep-arrow">Start watching →</div>
+    </a>
+
+    <a href="ep4-rag/" class="ep-card">
+      <div class="ep-number">Episode 04</div>
+      <div class="ep-emoji">📖</div>
+      <div class="ep-title">The Recipe Rolodex</div>
+      <div class="ep-topic">Retrieval-Augmented Generation · Vector Search</div>
+      <div class="ep-hook">When a chef consults their recipe book before cooking.</div>
+      <div class="ep-arrow">Start watching →</div>
+    </a>
+
+    <a href="ep5-prompting/" class="ep-card">
+      <div class="ep-number">Episode 05</div>
+      <div class="ep-emoji">📝</div>
+      <div class="ep-title">How You Write the Order</div>
+      <div class="ep-topic">Prompt Engineering · Chain-of-Thought · Few-Shot</div>
+      <div class="ep-hook">The same chef, wildly different results. It's all in the order.</div>
+      <div class="ep-arrow">Start watching →</div>
+    </a>
+
+    <a href="ep6-agents/" class="ep-card">
+      <div class="ep-number">Episode 06</div>
+      <div class="ep-emoji">🤖</div>
+      <div class="ep-title">The Autonomous Chef</div>
+      <div class="ep-topic">AI Agents · Tool Use · Planning · Memory</div>
+      <div class="ep-hook">A chef who can call suppliers, check inventory, AND cook.</div>
+      <div class="ep-arrow">Start watching →</div>
+    </a>
+
+    <a href="ep7-multimodal/" class="ep-card">
+      <div class="ep-number">Episode 07</div>
+      <div class="ep-emoji">📸</div>
+      <div class="ep-title">Show Me the Pizza</div>
+      <div class="ep-topic">Multimodal AI · Vision · Audio · Cross-Modal</div>
+      <div class="ep-hook">Show the chef a photo. They'll figure out the rest.</div>
+      <div class="ep-arrow">Start watching →</div>
+    </a>
+
+    <a href="ep8-hallucination/" class="ep-card">
+      <div class="ep-number">Episode 08</div>
+      <div class="ep-emoji">👻</div>
+      <div class="ep-title">The Confident Liar</div>
+      <div class="ep-topic">Hallucination · Safety · Constitutional AI · Red-Teaming</div>
+      <div class="ep-hook">The chef who invents dishes that never existed — with complete confidence.</div>
+      <div class="ep-arrow">Start watching →</div>
+    </a>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ABOUT -->
+<section class="about-section">
+  <div class="section-label">About the Series</div>
+  <h2 class="section-title" style="margin-bottom:1.5rem">Why Pizza?</h2>
+  <p>Because AI is <strong>complicated</strong>, and pizza is <strong>universally understood</strong>. Tokens are toppings. Attention is a chef deciding what matters. Fine-tuning is teaching Gordon Ramsay to make your grandma's sauce.</p>
+  <p>Each episode is a <strong>fully interactive experience</strong> — not slides, not videos, not walls of text. You click things. Things animate. Concepts click. 🍕</p>
+  <p>No math degree required. No prior ML knowledge needed. Just an appetite for learning.</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Explain It In Pizza 🍕</div>
+  <div class="footer-links">
+    <a href="https://github.com/zer0contextlost/explain-it-in-pizza-series" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+      View on GitHub
+    </a>
+    <a href="ep1-ml-basics/">Start with Episode 1 →</a>
+  </div>
+  <div class="footer-copy">Made with 🍕 and a lot of AI concepts</div>
+</footer>
+
+<script>
+  // Staggered card reveal on scroll
+  const cards = document.querySelectorAll('.ep-card');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        const card = entry.target;
+        const idx = Array.from(cards).indexOf(card);
+        card.style.animationDelay = `${idx * 0.07}s`;
+        card.classList.add('visible');
+        observer.unobserve(card);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
+
+  cards.forEach(card => observer.observe(card));
+</script>
+</body>
+</html>
