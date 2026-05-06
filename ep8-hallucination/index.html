@@ -4,27 +4,46 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Explain It In Pizza: Episode 8 - Hallucination & Safety</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="app" class="app-container">
-    <!-- Episode Navigation -->
-    <nav class="episode-nav">
-      <div class="nav-left">
-        <a href="#" class="nav-link nav-back">← Back to Ep7</a>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="nav-brand">
+        <a href="../index.html" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:0.5rem;">
+          <svg class="nav-pizza" viewBox="0 0 100 100" width="40" height="40">
+            <circle cx="50" cy="50" r="48" fill="#F4A261" stroke="#6B3A2A" stroke-width="2"/>
+            <line x1="50" y1="2" x2="50" y2="98" stroke="#6B3A2A" stroke-width="1.5" opacity="0.3"/>
+            <line x1="2" y1="50" x2="98" y2="50" stroke="#6B3A2A" stroke-width="1.5" opacity="0.3"/>
+            <path d="M 50 2 L 77 69 L 50 98 Z" fill="#E9C46A" opacity="0.7"/>
+            <path d="M 77 69 L 98 50 L 50 50 Z" fill="#E63946" opacity="0.7"/>
+            <path d="M 98 50 L 77 31 L 50 50 Z" fill="#2A9D8F" opacity="0.7"/>
+            <path d="M 77 31 L 50 2 L 50 50 Z" fill="#E9C46A" opacity="0.7"/>
+            <path d="M 50 50 L 50 2 L 23 31 Z" fill="#E63946" opacity="0.7"/>
+            <path d="M 50 50 L 23 31 L 2 50 Z" fill="#2A9D8F" opacity="0.7"/>
+            <path d="M 50 50 L 2 50 L 23 69 Z" fill="#E9C46A" opacity="0.7"/>
+            <path d="M 50 50 L 23 69 L 50 98 Z" fill="#E63946" opacity="0.7"/>
+          </svg>
+          <span style="font-family:'Pacifico',cursive;font-size:1rem;">← Series</span>
+        </a>
       </div>
-      <div class="nav-episodes">
-        <a href="#" class="ep-num" data-ep="1">Ep1</a>
-        <a href="#" class="ep-num" data-ep="2">Ep2</a>
-        <a href="#" class="ep-num" data-ep="3">Ep3</a>
-        <a href="#" class="ep-num" data-ep="4">Ep4</a>
-        <a href="#" class="ep-num" data-ep="5">Ep5</a>
-        <a href="#" class="ep-num" data-ep="6">Ep6</a>
-        <a href="#" class="ep-num" data-ep="7">Ep7</a>
-        <a href="#" class="ep-num ep-active" data-ep="8">Ep8</a>
+      <div class="nav-sections">
+        <button class="nav-dot" data-section="1" title="Why LLMs Hallucinate"></button>
+        <button class="nav-dot" data-section="2" title="Confabulation"></button>
+        <button class="nav-dot" data-section="3" title="Calibration"></button>
+        <button class="nav-dot" data-section="4" title="RLHF Alignment"></button>
+        <button class="nav-dot" data-section="5" title="Red Teaming"></button>
+        <button class="nav-dot" data-section="6" title="Constitutional AI"></button>
+        <button class="nav-dot" data-section="7" title="Jailbreaking"></button>
+        <button class="nav-dot" data-section="8" title="Emergent Capabilities"></button>
       </div>
-      <div class="nav-right">
-        <span class="episode-code">8765-8771</span>
+      <div class="nav-controls">
+        <button class="sound-toggle" id="soundToggle" title="Toggle Sound">🔊</button>
+        <button class="narrator-toggle" id="narratorToggle" title="Toggle Narrator">🎙️</button>
       </div>
     </nav>
 
@@ -33,45 +52,6 @@
       <div class="hero-content">
         <h1 class="hero-title">Explain It In Pizza:<br>Hallucination & Safety</h1>
         <p class="hero-subtitle">When the chef lies — and what stops him 🍕</p>
-        <div class="hero-visual" id="heroVisual">
-          <svg viewBox="0 0 200 160" class="hero-svg">
-            <!-- Chef -->
-            <circle cx="100" cy="40" r="15" fill="#F4A460"/>
-            <rect x="85" y="55" width="30" height="25" fill="#FF6B6B"/>
-            <circle cx="92" cy="62" r="2" fill="#333"/>
-            <circle cx="108" cy="62" r="2" fill="#333"/>
-            <path d="M 100 68 Q 98 70 100 72" stroke="#333" stroke-width="1" fill="none"/>
-            <path d="M 100 72 Q 95 78 90 80" stroke="#333" stroke-width="1.5" fill="none"/>
-
-            <!-- Pizza Box (initial state) -->
-            <g class="pizza-box" id="pizzaBox">
-              <rect x="50" y="90" width="100" height="50" fill="#D4A574" stroke="#8B6914" stroke-width="2"/>
-              <rect x="50" y="90" width="100" height="3" fill="#8B6914"/>
-              <text x="100" y="120" text-anchor="middle" font-size="12" fill="#333">Pizza Inside</text>
-            </g>
-
-            <!-- Lid (animation) -->
-            <g class="pizza-lid" id="pizzaLid">
-              <rect x="50" y="88" width="100" height="8" fill="#D4A574" stroke="#8B6914" stroke-width="2"/>
-              <line x1="50" y1="92" x2="150" y2="92" stroke="#8B6914" stroke-width="1"/>
-            </g>
-
-            <!-- Wrong Pizza (hidden, revealed by animation) -->
-            <g class="wrong-pizza" id="wrongPizza" opacity="0">
-              <circle cx="85" cy="120" r="8" fill="#FF6347"/>
-              <circle cx="95" cy="115" r="7" fill="#FFB6C1"/>
-              <circle cx="105" cy="118" r="8" fill="#87CEEB"/>
-              <text x="100" y="145" text-anchor="middle" font-size="10" fill="#C0392B" font-weight="bold">?? Wrong !!</text>
-            </g>
-
-            <!-- Chef Smile (thumbs up) -->
-            <g class="chef-gesture" id="chefGesture">
-              <path d="M 115 80 L 125 75 L 127 95" stroke="#F4A460" stroke-width="2" fill="none"/>
-              <circle cx="127" cy="100" r="3" fill="#F4A460"/>
-              <text x="132" y="105" font-size="20">👍</text>
-            </g>
-          </svg>
-        </div>
       </div>
     </section>
 

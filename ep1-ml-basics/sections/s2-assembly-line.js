@@ -11,47 +11,49 @@ export function init(containerEl) {
           <input type="range" id="speedSlider" min="0.5" max="3" value="1" step="0.5">
         </div>
       </div>
-      <canvas id="assemblyCanvas" class="assembly-canvas"></canvas>
-      <div class="assembly-visualization">
-        <div class="layer">
-          <div class="layer-title">Input<br>Raw Dough</div>
-          <div class="nodes-container" data-layer="0">
-            <div class="node">1</div>
-            <div class="node">2</div>
-            <div class="node">3</div>
+      <div class="assembly-canvas-wrapper" style="position:relative;">
+        <canvas id="assemblyCanvas" class="assembly-canvas" style="position:absolute;top:0;left:0;pointer-events:none;z-index:1;"></canvas>
+        <div class="assembly-visualization">
+          <div class="layer">
+            <div class="layer-title">Input<br>Raw Dough</div>
+            <div class="nodes-container" data-layer="0">
+              <div class="node">1</div>
+              <div class="node">2</div>
+              <div class="node">3</div>
+            </div>
           </div>
-        </div>
-        <div class="layer">
-          <div class="layer-title">Hidden 1<br>Sauce</div>
-          <div class="nodes-container" data-layer="1">
-            <div class="node">1</div>
-            <div class="node">2</div>
-            <div class="node">3</div>
-            <div class="node">4</div>
+          <div class="layer">
+            <div class="layer-title">Hidden 1<br>Sauce</div>
+            <div class="nodes-container" data-layer="1">
+              <div class="node">1</div>
+              <div class="node">2</div>
+              <div class="node">3</div>
+              <div class="node">4</div>
+            </div>
           </div>
-        </div>
-        <div class="layer">
-          <div class="layer-title">Hidden 2<br>Cheese</div>
-          <div class="nodes-container" data-layer="2">
-            <div class="node">1</div>
-            <div class="node">2</div>
-            <div class="node">3</div>
+          <div class="layer">
+            <div class="layer-title">Hidden 2<br>Cheese</div>
+            <div class="nodes-container" data-layer="2">
+              <div class="node">1</div>
+              <div class="node">2</div>
+              <div class="node">3</div>
+            </div>
           </div>
-        </div>
-        <div class="layer">
-          <div class="layer-title">Hidden 3<br>Toppings</div>
-          <div class="nodes-container" data-layer="3">
-            <div class="node">1</div>
-            <div class="node">2</div>
+          <div class="layer">
+            <div class="layer-title">Hidden 3<br>Toppings</div>
+            <div class="nodes-container" data-layer="3">
+              <div class="node">1</div>
+              <div class="node">2</div>
+            </div>
           </div>
-        </div>
-        <div class="layer">
-          <div class="layer-title">Output<br>Pizza</div>
-          <div class="nodes-container" data-layer="4">
-            <div class="node">🍕</div>
+          <div class="layer">
+            <div class="layer-title">Output<br>Pizza</div>
+            <div class="nodes-container" data-layer="4">
+              <div class="node">🍕</div>
+            </div>
           </div>
-        </div>
-      </div>
+        </div>  <!-- closes assembly-visualization -->
+      </div>    <!-- closes assembly-canvas-wrapper -->
       <div class="assembly-output">
         <div class="pizza-output">🍕</div>
       </div>
@@ -72,8 +74,9 @@ export function init(containerEl) {
 
   // Set canvas size
   function resizeCanvas() {
-    canvas.width = visualization.offsetWidth;
-    canvas.height = visualization.offsetHeight + 100;
+    const wrapper = canvas.parentElement;
+    canvas.width = wrapper.offsetWidth;
+    canvas.height = wrapper.offsetHeight;
   }
   requestAnimationFrame(() => {
     resizeCanvas();

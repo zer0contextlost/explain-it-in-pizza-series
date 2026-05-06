@@ -28,45 +28,66 @@ const appState = {
 
 // Initialize app
 function initApp() {
-  // Set up episode navigation
-  setupEpisodeNav();
-
-  // Initialize sections
+  // Initialize sections first so appState.sections is populated
   initializeSections();
 
-  // Set up hero animation
-  setupHeroAnimation();
+  // Set up nav dot wiring (needs sections to exist)
+  setupEpisodeNav();
 
   // Set up narrator
   setupNarrator();
 }
 
 function setupEpisodeNav() {
-  const epNumElements = document.querySelectorAll('.ep-num');
-  epNumElements.forEach(el => {
-    el.addEventListener('click', (e) => {
-      e.preventDefault();
-      const ep = el.dataset.ep;
-      if (ep !== '8' && EPISODE_LINKS[ep]) {
-        window.location.href = EPISODE_LINKS[ep];
+  // Wire up nav dots to scroll to the corresponding section
+  const navDots = document.querySelectorAll('.nav-dot');
+  navDots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      const sectionIndex = parseInt(dot.dataset.section, 10) - 1;
+      const section = appState.sections[sectionIndex];
+      if (section) {
+        const el = document.getElementById(section.id);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
     });
   });
 
-  const backBtn = document.querySelector('.nav-back');
-  if (backBtn) {
-    backBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (EPISODE_LINKS[7]) {
-        window.location.href = EPISODE_LINKS[7];
+  // Highlight active nav dot on scroll
+  const updateActiveDot = () => {
+    const sections = appState.sections.map(s => document.getElementById(s.id)).filter(Boolean);
+    let activeIndex = 0;
+    sections.forEach((el, i) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top <= window.innerHeight / 2) {
+        activeIndex = i;
       }
     });
-  }
-}
+    navDots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === activeIndex);
+    });
+  };
 
-function setupHeroAnimation() {
-  // Hero SVG animations are handled in CSS
-  // This ensures they're smooth and performant
+  window.addEventListener('scroll', updateActiveDot, { passive: true });
+  updateActiveDot();
+
+  // Sound / narrator toggles (basic toggle behaviour)
+  const soundToggle = document.getElementById('soundToggle');
+  if (soundToggle) {
+    soundToggle.addEventListener('click', () => {
+      soundToggle.classList.toggle('active');
+    });
+  }
+
+  const narratorToggle = document.getElementById('narratorToggle');
+  const narratorEl = document.getElementById('narrator');
+  if (narratorToggle && narratorEl) {
+    narratorToggle.addEventListener('click', () => {
+      narratorToggle.classList.toggle('active');
+      narratorEl.style.display = narratorToggle.classList.contains('active') ? '' : 'none';
+    });
+  }
 }
 
 function setupNarrator() {

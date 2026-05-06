@@ -135,22 +135,21 @@ export function init(containerEl) {
 
     const html = `
         <div style="margin-bottom: 2rem;">
-            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center;">
                 <button id="run-block-btn">Run Full Block</button>
-            </div>
-
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">
-                    Stack N Blocks: <span id="block-count">${numBlocks}</span>
-                </label>
-                <input
-                    type="range"
-                    id="block-slider"
-                    min="1"
-                    max="6"
-                    value="${numBlocks}"
-                    style="width: 100%; max-width: 300px;"
-                />
+                <button id="stack-block-btn" style="display:none; background:#2A9D8F; color:#fff;">
+                    + Stack another block
+                </button>
+                <span id="block-counter-badge" style="
+                    display: none;
+                    padding: 0.3rem 0.75rem;
+                    background: #E9C46A;
+                    border: 2px solid #6B3A2A;
+                    border-radius: 20px;
+                    font-weight: 700;
+                    font-size: 0.85rem;
+                    color: #264653;
+                "></span>
             </div>
 
             <canvas id="transformerCanvas" style="
@@ -184,20 +183,22 @@ export function init(containerEl) {
 
     containerEl.innerHTML = html;
 
-    const canvas = containerEl.querySelector('#transformerCanvas');
-    const runBtn = containerEl.querySelector('#run-block-btn');
-    const slider = containerEl.querySelector('#block-slider');
-    const blockCount = containerEl.querySelector('#block-count');
-    const caption = containerEl.querySelector('#stacking-caption');
-    const message = containerEl.querySelector('#completion-message');
+    const canvas       = containerEl.querySelector('#transformerCanvas');
+    const runBtn       = containerEl.querySelector('#run-block-btn');
+    const stackBtn     = containerEl.querySelector('#stack-block-btn');
+    const counterBadge = containerEl.querySelector('#block-counter-badge');
+    const caption      = containerEl.querySelector('#stacking-caption');
+    const message      = containerEl.querySelector('#completion-message');
+
+    const MAX_STACK = 8;
 
     canvasRef = canvas;
     ctxRef = canvas.getContext('2d');
 
     function resizeCanvas() {
         const rect = canvas.parentElement.getBoundingClientRect();
-        canvas.width = rect.width - 20;
-        canvas.height = numBlocks * 150 + 60;
+        canvas.width  = rect.width - 20;
+        canvas.height = numBlocks * 110 + 60;
     }
 
     function draw(activeSubBlock) {
@@ -208,21 +209,43 @@ export function init(containerEl) {
         }
     }
 
-    slider.addEventListener('input', (e) => {
-        numBlocks = parseInt(e.target.value, 10);
-        blockCount.textContent = numBlocks;
-        message.style.display = 'none';
-        caption.style.display = 'none';
+    function updateStackUI() {
+        counterBadge.style.display = numBlocks > 1 ? 'inline-block' : 'none';
+        counterBadge.textContent   = `${numBlocks} block${numBlocks > 1 ? 's' : ''} stacked`;
 
+        if (numBlocks >= MAX_STACK) {
+            stackBtn.disabled       = true;
+            stackBtn.textContent    = 'Stack full!';
+            caption.style.display   = 'block';
+            caption.textContent     = 'GPT-4 stacks 96 of these. You\'ve just built 8.';
+        } else {
+            stackBtn.disabled    = false;
+            stackBtn.textContent = '+ Stack another block';
+            caption.style.display = 'none';
+        }
+    }
+
+    stackBtn.addEventListener('click', () => {
+        if (numBlocks >= MAX_STACK) return;
+        numBlocks++;
+        message.style.display = 'none';
+
+        // Brief flash animation on canvas
+        const prevHeight = canvas.height;
         requestAnimationFrame(() => {
             resizeCanvas();
-            draw();
+            draw(null);
+
+            // Highlight the newly added block row briefly
+            const newBlockY = (numBlocks - 1) * 110 + 20;
+            ctxRef.save();
+            ctxRef.fillStyle = 'rgba(42, 157, 143, 0.18)';
+            ctxRef.fillRect(0, newBlockY, canvasRef.width, 90);
+            ctxRef.restore();
+            setTimeout(() => draw(null), 350);
         });
 
-        if (numBlocks === 6) {
-            caption.style.display = 'block';
-            caption.textContent = 'GPT-3 does this 96 times. GPT-4: probably 120.';
-        }
+        updateStackUI();
     });
 
     async function runBlock() {
@@ -240,6 +263,12 @@ export function init(containerEl) {
             // Clear active highlight
             draw(null);
             message.style.display = 'block';
+
+            // Reveal the "stack another block" button after first run
+            if (numBlocks < MAX_STACK) {
+                stackBtn.style.display = 'inline-block';
+            }
+            counterBadge.style.display = numBlocks > 1 ? 'inline-block' : 'none';
         } finally {
             runBtn.disabled = false;
             isAnimating = false;

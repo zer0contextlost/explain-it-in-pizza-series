@@ -34,6 +34,46 @@ function renderSections() {
         section.init(contentEl);
         setNarration(section.number);
     });
+
+    wireNavDots();
+}
+
+function wireNavDots() {
+    const navDots = document.querySelectorAll('.nav-dot');
+
+    // Click: scroll to the corresponding section
+    navDots.forEach((dot) => {
+        dot.addEventListener('click', () => {
+            const sectionNum = dot.dataset.section;
+            const target = document.getElementById(`section-${sectionNum}`);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+
+    // Scroll observer: mark the dot active when its section is in view
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id; // e.g. "section-3"
+                    const num = id.replace('section-', '');
+                    navDots.forEach((dot) => {
+                        dot.classList.toggle('active', dot.dataset.section === num);
+                    });
+                    // Update narrator to match visible section
+                    setNarration(parseInt(num, 10));
+                }
+            });
+        },
+        { threshold: 0.4 }
+    );
+
+    sections.forEach(({ number }) => {
+        const el = document.getElementById(`section-${number}`);
+        if (el) observer.observe(el);
+    });
 }
 
 window.addEventListener('load', () => {
@@ -41,4 +81,3 @@ window.addEventListener('load', () => {
         renderSections();
     });
 });
-

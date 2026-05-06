@@ -47,9 +47,13 @@ export function init(containerEl) {
     { name: 'Zucchini', emoji: '🥒', type: 'good', color: '#7CB342' },
     { name: 'Eggplant', emoji: '🍆', type: 'good', color: '#663399' },
     { name: 'Rubber Duck', emoji: '🦆', type: 'bad', color: '#FFD700' },
+    { name: 'Motor Oil', emoji: '🛢️', type: 'bad', color: '#333' },
+    { name: 'Old Boot', emoji: '👢', type: 'bad', color: '#8B4513' },
+    { name: 'Crayon', emoji: '🖍️', type: 'bad', color: '#FF6B35' },
+    { name: 'Sand', emoji: '⏳', type: 'bad', color: '#C2B280' },
   ];
 
-  const milestones = [100, 300, 500];
+  const milestones = [100, 250, 500];
 
   const gridEl = containerEl.querySelector('#ingredientsGrid');
   const counterEl = containerEl.querySelector('#counter');
@@ -63,7 +67,7 @@ export function init(containerEl) {
       setTimeout(() => bowl.classList.remove('animate-shake'), 400);
       window.soundManager?.error();
     } else {
-      count = Math.min(500, count + 20);
+      count = Math.min(500, count + 25);
       window.soundManager?.plop();
     }
 

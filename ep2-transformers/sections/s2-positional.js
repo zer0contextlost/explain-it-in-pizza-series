@@ -173,6 +173,150 @@ export function init(containerEl) {
         resizeCanvas();
         draw();
     });
+
+    // ── Drag-to-reorder demo ─────────────────────────────────────────────────
+    const TOPPINGS = [
+        { id: 'dough',  emoji: '🍕', label: 'Dough'  },
+        { id: 'sauce',  emoji: '🍅', label: 'Sauce'  },
+        { id: 'cheese', emoji: '🧀', label: 'Cheese' },
+        { id: 'basil',  emoji: '🌿', label: 'Basil'  }
+    ];
+    const CORRECT_ORDER = ['dough', 'sauce', 'cheese', 'basil'];
+
+    const dragSection = document.createElement('div');
+    dragSection.style.cssText = 'margin-top: 2.5rem; border-top: 2px dashed #6B3A2A; padding-top: 1.5rem;';
+    dragSection.innerHTML = `
+        <p style="font-weight: 700; margin-bottom: 0.5rem; color: #6B3A2A;">
+            🍕 Position matters — drag the toppings into the right order:
+        </p>
+        <p style="font-size: 0.85rem; color: #555; margin-bottom: 1rem;">
+            A pizza is assembled in a specific sequence. The transformer cares about order the same way.
+        </p>
+        <div id="topping-drop-zone" style="
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            padding: 1rem;
+            background: #FFF8F0;
+            border: 2px dashed #F4A261;
+            border-radius: 10px;
+            min-height: 80px;
+            justify-content: center;
+            align-items: center;
+        "></div>
+        <div id="order-result" style="
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 700;
+            min-height: 2rem;
+        "></div>
+    `;
+    containerEl.appendChild(dragSection);
+
+    const dropZone    = dragSection.querySelector('#topping-drop-zone');
+    const orderResult = dragSection.querySelector('#order-result');
+
+    // Current order (shuffled on init so it starts wrong)
+    let currentOrder = [...TOPPINGS].sort(() => Math.random() - 0.5);
+    // Ensure the shuffle is actually "wrong" at least once
+    while (currentOrder.map(t => t.id).join(',') === CORRECT_ORDER.join(',')) {
+        currentOrder = [...TOPPINGS].sort(() => Math.random() - 0.5);
+    }
+
+    let dragSrcIndex = null;
+
+    function buildToppingTile(topping, index) {
+        const tile = document.createElement('div');
+        tile.draggable = true;
+        tile.dataset.index = index;
+        tile.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.6rem 1rem;
+            background: #fff;
+            border: 2px solid #6B3A2A;
+            border-radius: 10px;
+            cursor: grab;
+            user-select: none;
+            font-size: 2rem;
+            font-weight: 600;
+            transition: transform 0.15s, box-shadow 0.15s;
+            min-width: 72px;
+        `;
+        tile.innerHTML = `
+            <span style="font-size:2rem;">${topping.emoji}</span>
+            <span style="font-size:0.75rem; color:#264653;">${topping.label}</span>
+        `;
+
+        tile.addEventListener('dragstart', (e) => {
+            dragSrcIndex = parseInt(tile.dataset.index);
+            tile.style.opacity = '0.45';
+            e.dataTransfer.effectAllowed = 'move';
+        });
+        tile.addEventListener('dragend', () => {
+            tile.style.opacity = '1';
+        });
+        tile.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            tile.style.transform = 'scale(1.08)';
+            tile.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+        });
+        tile.addEventListener('dragleave', () => {
+            tile.style.transform = '';
+            tile.style.boxShadow = '';
+        });
+        tile.addEventListener('drop', (e) => {
+            e.preventDefault();
+            tile.style.transform = '';
+            tile.style.boxShadow = '';
+            const destIndex = parseInt(tile.dataset.index);
+            if (dragSrcIndex !== null && dragSrcIndex !== destIndex) {
+                // Swap
+                const tmp = currentOrder[dragSrcIndex];
+                currentOrder[dragSrcIndex] = currentOrder[destIndex];
+                currentOrder[destIndex] = tmp;
+                renderToppings();
+                checkOrder();
+            }
+            dragSrcIndex = null;
+        });
+
+        return tile;
+    }
+
+    function renderToppings() {
+        dropZone.innerHTML = '';
+        currentOrder.forEach((topping, idx) => {
+            dropZone.appendChild(buildToppingTile(topping, idx));
+        });
+    }
+
+    function checkOrder() {
+        const ids = currentOrder.map(t => t.id);
+        const isCorrect = ids.join(',') === CORRECT_ORDER.join(',');
+        if (isCorrect) {
+            orderResult.innerHTML = `
+                <span style="color:#2A9D8F;">
+                    ✅ ${ids.map(id => TOPPINGS.find(t=>t.id===id).emoji).join(' → ')} = Perfect pizza!
+                    The transformer reads this sequence and understands the structure.
+                </span>`;
+        } else {
+            // Build a human-readable wrong-order comment
+            const emojis = ids.map(id => TOPPINGS.find(t => t.id === id).emoji).join(' → ');
+            orderResult.innerHTML = `
+                <span style="color:#E63946;">
+                    ❌ ${emojis} = Disaster!
+                    Cheese before dough? The transformer would be just as confused.
+                </span>`;
+        }
+    }
+
+    renderToppings();
+    checkOrder();
 }
 
 export function reset() {

@@ -4,23 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Explain It In Pizza: Multimodal AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav class="nav-bar">
-        <div class="nav-episodes">
-            <a href="http://localhost:3000/explain-ep1" class="nav-link">Ep1</a>
-            <a href="http://localhost:3000/explain-ep2" class="nav-link">Ep2</a>
-            <a href="http://localhost:3000/explain-ep3" class="nav-link">Ep3</a>
-            <a href="http://localhost:3000/explain-ep4" class="nav-link">Ep4</a>
-            <a href="http://localhost:3000/explain-ep5" class="nav-link">Ep5</a>
-            <a href="http://localhost:3000/explain-ep6" class="nav-link">Ep6</a>
-            <a href="#" class="nav-link active">Ep7</a>
-        </div>
+    <nav class="navbar">
+      <div class="nav-brand">
+        <a href="../index.html" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:0.5rem;">
+          <svg class="nav-pizza" viewBox="0 0 100 100" width="40" height="40">
+            <circle cx="50" cy="50" r="48" fill="#F4A261" stroke="#6B3A2A" stroke-width="2"/>
+            <line x1="50" y1="2" x2="50" y2="98" stroke="#6B3A2A" stroke-width="1.5" opacity="0.3"/>
+            <line x1="2" y1="50" x2="98" y2="50" stroke="#6B3A2A" stroke-width="1.5" opacity="0.3"/>
+            <path d="M 50 2 L 77 69 L 50 98 Z" fill="#E9C46A" opacity="0.7"/>
+            <path d="M 77 69 L 98 50 L 50 50 Z" fill="#E63946" opacity="0.7"/>
+            <path d="M 98 50 L 77 31 L 50 50 Z" fill="#2A9D8F" opacity="0.7"/>
+            <path d="M 77 31 L 50 2 L 50 50 Z" fill="#E9C46A" opacity="0.7"/>
+            <path d="M 50 50 L 50 2 L 23 31 Z" fill="#E63946" opacity="0.7"/>
+            <path d="M 50 50 L 23 31 L 2 50 Z" fill="#2A9D8F" opacity="0.7"/>
+            <path d="M 50 50 L 2 50 L 23 69 Z" fill="#E9C46A" opacity="0.7"/>
+            <path d="M 50 50 L 23 69 L 50 98 Z" fill="#E63946" opacity="0.7"/>
+          </svg>
+          <span style="font-family:'Pacifico',cursive;font-size:1rem;">← Series</span>
+        </a>
+      </div>
+      <div class="nav-sections">
+        <button class="nav-dot" data-section="1" title="Vision Encoder"></button>
+        <button class="nav-dot" data-section="2" title="Image Patches"></button>
+        <button class="nav-dot" data-section="3" title="Cross-Attention"></button>
+        <button class="nav-dot" data-section="4" title="Text-to-Image"></button>
+        <button class="nav-dot" data-section="5" title="Audio"></button>
+        <button class="nav-dot" data-section="6" title="Video"></button>
+        <button class="nav-dot" data-section="7" title="Joint Embedding"></button>
+        <button class="nav-dot" data-section="8" title="Modality Gaps"></button>
+      </div>
+      <div class="nav-controls">
+        <button class="sound-toggle" id="soundToggle" title="Toggle Sound">🔊</button>
+        <button class="narrator-toggle" id="narratorToggle" title="Toggle Narrator">🎙️</button>
+      </div>
     </nav>
 
     <header class="hero">
-        <h1 class="hero-title">Explain It In Pizza: Multimodal AI</h1>
+        <h1 class="hero-title">Multimodal AI</h1>
         <p class="hero-subtitle">When the chef learns to see, hear, and draw 🍕</p>
         <div class="hero-visual">
             <svg class="orbital-container" viewBox="0 0 200 200" width="200" height="200">
@@ -45,7 +71,7 @@
                         }
                     </style>
                 </defs>
-                <circle cx="100" cy="100" r="60" fill="none" stroke="var(--color-vision)" stroke-width="1" opacity="0.2"/>
+                <circle cx="100" cy="100" r="60" fill="none" stroke="#F4A261" stroke-width="1" opacity="0.4"/>
                 <g class="orbit-item">
                     <text x="100" y="50" text-anchor="middle" font-size="32">👁️</text>
                 </g>

@@ -45,6 +45,23 @@ export function init(containerEl) {
                 <button id="show-math-btn">Show the Math</button>
             </div>
 
+            <div style="margin-top: 1.5rem; border-top: 2px dashed #6B3A2A; padding-top: 1.25rem;">
+                <p style="font-weight: 700; margin-bottom: 0.75rem; color: #6B3A2A;">
+                    What happens at extreme temperatures?
+                </p>
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    <button id="zero-temp-btn" style="background:#264653; color:#fff;">🧊 Zero Temp (Robot Chef)</button>
+                    <button id="max-temp-btn"  style="background:#E63946; color:#fff;">🔥 Max Temp (Chaotic Chef)</button>
+                </div>
+                <div id="extreme-caption" style="
+                    margin-top: 0.85rem;
+                    font-style: italic;
+                    font-size: 0.95rem;
+                    color: #6B3A2A;
+                    min-height: 1.4em;
+                "></div>
+            </div>
+
             <div id="math-steps" style="
                 display: none;
                 margin-top: 1.5rem;
@@ -58,11 +75,14 @@ export function init(containerEl) {
 
     containerEl.innerHTML = html;
 
-    const slider = containerEl.querySelector('#temp-slider');
-    const tempValue = containerEl.querySelector('#temp-value');
-    const barsDiv = containerEl.querySelector('#softmax-bars');
-    const mathBtn = containerEl.querySelector('#show-math-btn');
-    const mathSteps = containerEl.querySelector('#math-steps');
+    const slider         = containerEl.querySelector('#temp-slider');
+    const tempValue      = containerEl.querySelector('#temp-value');
+    const barsDiv        = containerEl.querySelector('#softmax-bars');
+    const mathBtn        = containerEl.querySelector('#show-math-btn');
+    const mathSteps      = containerEl.querySelector('#math-steps');
+    const zeroTempBtn    = containerEl.querySelector('#zero-temp-btn');
+    const maxTempBtn     = containerEl.querySelector('#max-temp-btn');
+    const extremeCaption = containerEl.querySelector('#extreme-caption');
 
     function updateBars() {
         barsDiv.innerHTML = '';
@@ -127,6 +147,62 @@ export function init(containerEl) {
         currentProbs = softmax(RAW_SCORES, temperature);
         updateBars();
     });
+
+    // ── Extreme temperature presets ──────────────────────────────────────────
+    let sliderAnimId = null;
+
+    function animateSliderTo(targetVal, caption) {
+        if (sliderAnimId) cancelAnimationFrame(sliderAnimId);
+        const start     = parseFloat(slider.value);
+        const dist      = targetVal - start;
+        const duration  = 600; // ms
+        const startTime = performance.now();
+
+        function step(now) {
+            const elapsed  = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            // Ease-out cubic
+            const eased    = 1 - Math.pow(1 - progress, 3);
+            const current  = start + dist * eased;
+
+            slider.value       = current;
+            temperature        = current;
+            tempValue.textContent = current.toFixed(2);
+            currentProbs       = softmax(RAW_SCORES, temperature);
+            updateBars();
+
+            if (progress < 1) {
+                sliderAnimId = requestAnimationFrame(step);
+            } else {
+                slider.value       = targetVal;
+                temperature        = targetVal;
+                tempValue.textContent = targetVal.toFixed(2);
+                currentProbs       = softmax(RAW_SCORES, temperature);
+                updateBars();
+                extremeCaption.textContent = caption;
+                sliderAnimId = null;
+            }
+        }
+        sliderAnimId = requestAnimationFrame(step);
+    }
+
+    zeroTempBtn.addEventListener('click', () => {
+        animateSliderTo(
+            0.1,
+            'Always picks anchovy. Every time. Zero creativity.'
+        );
+    });
+
+    maxTempBtn.addEventListener('click', () => {
+        animateSliderTo(
+            5.0,
+            'Equal attention to everything. The chef is overwhelmed.'
+        );
+    });
+
+    // Clear caption when user manually moves the slider
+    slider.addEventListener('mousedown',  () => { extremeCaption.textContent = ''; });
+    slider.addEventListener('touchstart', () => { extremeCaption.textContent = ''; });
 
     mathBtn.addEventListener('click', async () => {
         if (isAnimating) return;
