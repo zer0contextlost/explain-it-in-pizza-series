@@ -149,6 +149,10 @@ export function init(containerEl) {
 
             <div id="result-box" style="display:none;margin-top:1rem;padding:1rem;border-radius:10px;text-align:center;font-weight:700;font-size:1rem;"></div>
             <div id="final-box" style="display:none;margin-top:1rem;padding:1.25rem;background:#E9C46A;border-radius:10px;border:2px solid #6B3A2A;text-align:center;"></div>
+
+            <div style="margin-top:1.25rem;padding:0.85rem 1rem;background:#FFF8F0;border-radius:8px;border-left:4px solid #2A9D8F;font-size:0.85rem;">
+                🤔 <strong>Why does this matter?</strong> Without normalization, some activations grow huge and others shrink to near-zero during training. This makes gradients explode or vanish — the model can't learn. Layer norm keeps every layer's outputs in a stable range, so each block receives a consistent "ingredient" to work with, no matter how deep the network gets.
+            </div>
         </div>
     `;
 

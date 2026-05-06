@@ -208,6 +208,10 @@ export function init(containerEl) {
             <div id="relu-callout" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:#FDECEA;border-radius:8px;border-left:4px solid #E63946;font-size:0.9rem;max-width:480px;">
                 🔥 ReLU killed negative activations (shown as ✗). The network only passes positive signals forward!
             </div>
+
+            <div style="margin-top:1rem;padding:0.75rem 1rem;background:#FFF8F0;border-radius:8px;border-left:4px solid #E9C46A;font-size:0.85rem;max-width:480px;">
+                📐 <strong>Real scale note:</strong> This demo shows 4→8→4 for clarity. In a real transformer (e.g. GPT-3 with d_model=768), the hidden layer expands to ~3072 — that's <strong>4× the model size</strong>. More neurons = more ways to transform the meaning.
+            </div>
         </div>
     `;
 

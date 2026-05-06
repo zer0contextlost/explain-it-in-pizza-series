@@ -160,6 +160,35 @@ export function init(containerEl) {
             </div>
         </div>
 
+        <!-- Q, K, V explainer -->
+        <div style="margin-top:2rem;border-top:2px dashed #6B3A2A;padding-top:1.5rem;">
+            <p style="font-weight:700;margin-bottom:0.75rem;color:#6B3A2A;">🔑 How are those scores actually computed?</p>
+            <p style="font-size:0.9rem;color:#264653;margin-bottom:0.85rem;line-height:1.6;">
+                The attention heatmap shows <em>scores</em>, but each score comes from three learned vectors that every token generates:
+            </p>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1rem;max-width:540px;">
+                <div style="background:#E9C46A;border:2px solid #6B3A2A;border-radius:10px;padding:0.75rem;text-align:center;">
+                    <div style="font-size:1.5rem;">❓</div>
+                    <div style="font-weight:700;font-size:0.95rem;margin:0.3rem 0;">Query (Q)</div>
+                    <div style="font-size:0.78rem;color:#264653;">"What am I looking for?"</div>
+                </div>
+                <div style="background:#F4A261;border:2px solid #6B3A2A;border-radius:10px;padding:0.75rem;text-align:center;">
+                    <div style="font-size:1.5rem;">🏷️</div>
+                    <div style="font-weight:700;font-size:0.95rem;margin:0.3rem 0;">Key (K)</div>
+                    <div style="font-size:0.78rem;color:#264653;">"What do I advertise?"</div>
+                </div>
+                <div style="background:#E63946;color:#fff;border:2px solid #6B3A2A;border-radius:10px;padding:0.75rem;text-align:center;">
+                    <div style="font-size:1.5rem;">🎁</div>
+                    <div style="font-weight:700;font-size:0.95rem;margin:0.3rem 0;">Value (V)</div>
+                    <div style="font-size:0.78rem;">"What I actually contribute"</div>
+                </div>
+            </div>
+            <p style="font-size:0.88rem;color:#264653;line-height:1.6;background:#FFF8F0;border-radius:8px;padding:0.75rem;border-left:4px solid #E63946;max-width:540px;">
+                <strong>The formula:</strong> score(basil→caper) = basil's <strong>Q</strong> · caper's <strong>K</strong> ÷ √d<sub>k</sub><br>
+                The heatmap you're clicking is the result of that dot-product for every pair. Then softmax (next section) turns those scores into probabilities — and those probabilities weight-sum the <strong>V</strong> vectors to produce the final output.
+            </p>
+        </div>
+
         <div style="margin-top:2rem;border-top:2px dashed #6B3A2A;padding-top:1.5rem;">
             <p style="font-weight:700;margin-bottom:0.4rem;color:#6B3A2A;">🧩 Attention Quiz</p>
             <p style="font-size:0.85rem;color:#555;margin-bottom:1.25rem;">Can you predict which ingredient gets the most attention?</p>

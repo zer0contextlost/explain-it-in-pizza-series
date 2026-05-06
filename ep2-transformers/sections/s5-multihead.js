@@ -155,6 +155,28 @@ export function init(containerEl) {
             <canvas id="combinedCanvas" style="width:100%;max-width:300px;height:auto;display:block;border:2px solid #6B3A2A;border-radius:10px;"></canvas>
 
             <div id="insight-box" style="margin-top:1.25rem;padding:1rem;background:#FFF8F0;border-radius:10px;border-left:4px solid #E63946;font-size:0.9rem;display:none;"></div>
+
+            <!-- Output projection callout -->
+            <div style="margin-top:1.5rem;border-top:2px dashed #6B3A2A;padding-top:1.25rem;">
+                <p style="font-weight:700;margin-bottom:0.6rem;color:#6B3A2A;">➕ One more step: the Output Projection</p>
+                <p style="font-size:0.88rem;color:#264653;line-height:1.6;">
+                    In a real transformer, the heads aren't just averaged — they're <strong>concatenated</strong> (stacked end-to-end) and then multiplied by a learned matrix called <strong>W<sub>out</sub></strong>.
+                    This final linear layer lets the model learn <em>how much to trust each head</em>, rather than weighting them all equally.
+                </p>
+                <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-top:0.85rem;font-size:0.88rem;font-weight:600;color:#264653;">
+                    <span style="background:#E63946;color:#fff;padding:0.3rem 0.7rem;border-radius:8px;">🌶️ Spice</span>
+                    <span style="color:#888;">+</span>
+                    <span style="background:#2A9D8F;color:#fff;padding:0.3rem 0.7rem;border-radius:8px;">🧀 Texture</span>
+                    <span style="color:#888;">+</span>
+                    <span style="background:#E9C46A;color:#264653;padding:0.3rem 0.7rem;border-radius:8px;">🍅 Flavor</span>
+                    <span style="color:#888;">+</span>
+                    <span style="background:#6B3A2A;color:#fff;padding:0.3rem 0.7rem;border-radius:8px;">🌿 Balance</span>
+                    <span style="color:#888;">→ concat →</span>
+                    <span style="background:#264653;color:#fff;padding:0.3rem 0.7rem;border-radius:8px;">W<sub>out</sub> ×</span>
+                    <span style="color:#888;">→</span>
+                    <span style="background:#F4A261;color:#264653;padding:0.3rem 0.7rem;border-radius:8px;">🍕 Final Output</span>
+                </div>
+            </div>
         </div>
     `;
 

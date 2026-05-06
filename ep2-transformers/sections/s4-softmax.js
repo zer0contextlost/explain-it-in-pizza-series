@@ -214,34 +214,42 @@ export function init(containerEl) {
 
             // Step 1: Raw scores
             mathSteps.innerHTML = `
-                <p><strong>Step 1: Raw Scores</strong></p>
-                <p>${RAW_SCORES.map((s, i) => `${PAIR_LABELS[i]}: ${s}`).join(', ')}</p>
+                <p><strong>Step 1: Raw attention scores</strong></p>
+                <p style="font-size:0.85rem;color:#555;margin-bottom:0.5rem;">These are the dot-product scores — big number = strong attraction between ingredients.</p>
+                <p>${RAW_SCORES.map((s, i) => `<strong>${PAIR_LABELS[i]}</strong>: ${s}`).join(' &nbsp;|&nbsp; ')}</p>
             `;
-            await new Promise(r => setTimeout(r, 1500));
+            await new Promise(r => setTimeout(r, 1800));
 
-            // Step 2: Exponentiate
-            const exps = RAW_SCORES.map(s => Math.exp(s / temperature));
-            const maxExp = Math.max(...exps);
-            const normExp = exps.map(e => e / maxExp);
+            // Step 2: e^x for each
+            const scaled = RAW_SCORES.map(s => s / temperature);
+            const exps = scaled.map(s => Math.exp(s));
             mathSteps.innerHTML += `
-                <p style="margin-top: 1rem;"><strong>Step 2: Apply exp() and normalize</strong></p>
-                <p>${normExp.map((e, i) => `${PAIR_LABELS[i]}: ${e.toFixed(4)}`).join(', ')}</p>
+                <p style="margin-top: 1rem;"><strong>Step 2: Raise e to each score (e<sup>x</sup>)</strong></p>
+                <p style="font-size:0.85rem;color:#555;margin-bottom:0.5rem;">Exponential makes all values positive and amplifies differences.</p>
+                <p>${exps.map((e, i) => `<strong>${PAIR_LABELS[i]}</strong>: ${e.toFixed(3)}`).join(' &nbsp;|&nbsp; ')}</p>
             `;
-            await new Promise(r => setTimeout(r, 1500));
+            await new Promise(r => setTimeout(r, 1800));
 
-            // Step 3: Sum and normalize
-            const sumExp = normExp.reduce((a, b) => a + b, 0);
-            const final = normExp.map(e => e / sumExp);
+            // Step 3: Sum
+            const sumExp = exps.reduce((a, b) => a + b, 0);
             mathSteps.innerHTML += `
-                <p style="margin-top: 1rem;"><strong>Step 3: Divide by sum</strong></p>
-                <p>${final.map((p, i) => `${PAIR_LABELS[i]}: ${(p * 100).toFixed(1)}%`).join(', ')}</p>
+                <p style="margin-top: 1rem;"><strong>Step 3: Sum all exponentials</strong></p>
+                <p>Total = ${sumExp.toFixed(3)}</p>
+            `;
+            await new Promise(r => setTimeout(r, 1200));
+
+            // Step 4: Divide by sum
+            const final = exps.map(e => e / sumExp);
+            mathSteps.innerHTML += `
+                <p style="margin-top: 1rem;"><strong>Step 4: Divide each by the total</strong></p>
+                <p>${final.map((p, i) => `<strong>${PAIR_LABELS[i]}</strong>: ${(p * 100).toFixed(1)}%`).join(' &nbsp;|&nbsp; ')}</p>
             `;
             await new Promise(r => setTimeout(r, 1000));
 
             mathSteps.innerHTML += `
-                <p style="margin-top: 1rem; font-style: italic; color: #6B3A2A;">
-                    <strong>The point:</strong> No matter the raw scores, the probabilities always sum to 100%.
-                    Attention must be split!
+                <p style="margin-top: 1rem; font-style: italic; color: #6B3A2A; border-top: 1px dashed #6B3A2A; padding-top: 0.75rem;">
+                    <strong>The point:</strong> No matter the raw scores, the result always sums to 100%.
+                    The chef must split 100% of their focus — give more to anchovy and you must take from the others.
                 </p>
             `;
         } finally {

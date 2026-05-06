@@ -176,7 +176,7 @@ export function init(containerEl) {
                 border: 2px solid #6B3A2A;
             ">
                 <p style="font-size: 1.3rem; margin-bottom: 0.5rem;">🍕 You just baked a Transformer!</p>
-                <p style="color: #264653;">Stack 96 of these in a row and you've got GPT-4.</p>
+                <p style="color: #264653;">GPT-3 stacks 96 of these. GPT-4's exact depth isn't public — but it's <em>deep</em>.</p>
             </div>
         </div>
     `;
@@ -217,7 +217,7 @@ export function init(containerEl) {
             stackBtn.disabled       = true;
             stackBtn.textContent    = 'Stack full!';
             caption.style.display   = 'block';
-            caption.textContent     = 'GPT-4 stacks 96 of these. You\'ve just built 8.';
+            caption.textContent     = 'GPT-3 uses 96. GPT-4\'s depth is undisclosed — but you\'ve built 8!';
         } else {
             stackBtn.disabled    = false;
             stackBtn.textContent = '+ Stack another block';

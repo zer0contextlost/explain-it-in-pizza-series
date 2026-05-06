@@ -187,11 +187,17 @@ export function init(containerEl) {
     dragSection.style.cssText = 'margin-top: 2.5rem; border-top: 2px dashed #6B3A2A; padding-top: 1.5rem;';
     dragSection.innerHTML = `
         <p style="font-weight: 700; margin-bottom: 0.5rem; color: #6B3A2A;">
-            🍕 Position matters — drag the toppings into the right order:
+            🍕 The key insight: transformers are order-blind without positional encoding
         </p>
-        <p style="font-size: 0.85rem; color: #555; margin-bottom: 1rem;">
-            A pizza is assembled in a specific sequence. The transformer cares about order the same way.
+        <p style="font-size: 0.9rem; color: #264653; margin-bottom: 0.75rem; line-height:1.5;">
+            Without the encoding, <strong>every ordering looks identical</strong> to the transformer — it can't tell Dough→Sauce from Sauce→Dough.
+            Toggle <em>Position ON</em> above, and the signal is added. Now it knows. Try dragging to see both states:
         </p>
+        <div style="display:flex;gap:0.75rem;margin-bottom:0.85rem;flex-wrap:wrap;">
+            <div id="pos-state-pill" style="padding:0.3rem 0.9rem;border-radius:20px;font-weight:700;font-size:0.85rem;border:2px solid #6B3A2A;background:#E63946;color:#fff;">
+                📍 Position: OFF — all orders look the same!
+            </div>
+        </div>
         <div id="topping-drop-zone" style="
             display: flex;
             gap: 0.75rem;
@@ -214,12 +220,27 @@ export function init(containerEl) {
     `;
     containerEl.appendChild(dragSection);
 
-    const dropZone    = dragSection.querySelector('#topping-drop-zone');
-    const orderResult = dragSection.querySelector('#order-result');
+    const dropZone     = dragSection.querySelector('#topping-drop-zone');
+    const orderResult  = dragSection.querySelector('#order-result');
+    const posPill      = dragSection.querySelector('#pos-state-pill');
+
+    // Sync pill with the positioningEnabled toggle above
+    function syncPosPill() {
+        if (positioningEnabled) {
+            posPill.style.background = '#2A9D8F';
+            posPill.textContent = '📍 Position: ON — the transformer can now distinguish order!';
+        } else {
+            posPill.style.background = '#E63946';
+            posPill.textContent = '📍 Position: OFF — all orders look the same!';
+        }
+    }
+
+    // Patch the existing toggle button to also sync pill
+    const origToggleClick = toggleBtn.onclick;
+    toggleBtn.addEventListener('click', syncPosPill);
 
     // Current order (shuffled on init so it starts wrong)
     let currentOrder = [...TOPPINGS].sort(() => Math.random() - 0.5);
-    // Ensure the shuffle is actually "wrong" at least once
     while (currentOrder.map(t => t.id).join(',') === CORRECT_ORDER.join(',')) {
         currentOrder = [...TOPPINGS].sort(() => Math.random() - 0.5);
     }
@@ -256,12 +277,9 @@ export function init(containerEl) {
             tile.style.opacity = '0.45';
             e.dataTransfer.effectAllowed = 'move';
         });
-        tile.addEventListener('dragend', () => {
-            tile.style.opacity = '1';
-        });
+        tile.addEventListener('dragend', () => { tile.style.opacity = '1'; });
         tile.addEventListener('dragover', (e) => {
             e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
             tile.style.transform = 'scale(1.08)';
             tile.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
         });
@@ -275,7 +293,6 @@ export function init(containerEl) {
             tile.style.boxShadow = '';
             const destIndex = parseInt(tile.dataset.index);
             if (dragSrcIndex !== null && dragSrcIndex !== destIndex) {
-                // Swap
                 const tmp = currentOrder[dragSrcIndex];
                 currentOrder[dragSrcIndex] = currentOrder[destIndex];
                 currentOrder[destIndex] = tmp;
@@ -297,26 +314,39 @@ export function init(containerEl) {
 
     function checkOrder() {
         const ids = currentOrder.map(t => t.id);
+        const emojis = ids.map(id => TOPPINGS.find(t => t.id === id).emoji).join(' → ');
         const isCorrect = ids.join(',') === CORRECT_ORDER.join(',');
+
+        if (!positioningEnabled) {
+            orderResult.innerHTML = `
+                <span style="color:#888;">
+                    🤷 ${emojis} — Without positional encoding the transformer shrugs. Every order looks the same to it.
+                    <br><small>Turn Position ON above to make order matter!</small>
+                </span>`;
+            return;
+        }
+
         if (isCorrect) {
             orderResult.innerHTML = `
                 <span style="color:#2A9D8F;">
-                    ✅ ${ids.map(id => TOPPINGS.find(t=>t.id===id).emoji).join(' → ')} = Perfect pizza!
-                    The transformer reads this sequence and understands the structure.
+                    ✅ ${emojis} — The positional encoding tells the transformer this is the correct sequence.
+                    It knows Dough comes first!
                 </span>`;
         } else {
-            // Build a human-readable wrong-order comment
-            const emojis = ids.map(id => TOPPINGS.find(t => t.id === id).emoji).join(' → ');
             orderResult.innerHTML = `
                 <span style="color:#E63946;">
-                    ❌ ${emojis} = Disaster!
-                    Cheese before dough? The transformer would be just as confused.
+                    ❌ ${emojis} — The positional encoding reveals this is wrong. Cheese can't come before Dough.
+                    The encoding makes each position unique — that's the whole point!
                 </span>`;
         }
     }
 
+    // Re-check when position is toggled
+    toggleBtn.addEventListener('click', () => { checkOrder(); });
+
     renderToppings();
     checkOrder();
+    syncPosPill();
 }
 
 export function reset() {
