@@ -85,6 +85,20 @@ ${this.systemPrompts.tony.text}
                     <div class="pizza-display" id="sp-pizza" style="font-size: 3rem;">🍕</div>
                 </div>
 
+                <div style="margin-top: 1.5rem; border-top: 2px dashed #ccc; padding-top: 1.5rem;">
+                    <label class="label">Write your own system prompt:</label>
+                    <textarea id="sp-custom-system" placeholder="You are a pizza chef who only speaks in rhymes..." style="width: 100%; margin-top: 0.5rem; min-height: 70px; font-size: 0.95rem; font-family: monospace;"></textarea>
+                    <div style="margin-top: 0.75rem; text-align: center;">
+                        <button id="sp-test-btn" style="background-color: var(--primary-color); font-size: 1rem; padding: 0.75rem 1.75rem;">
+                            Test This Prompt 🧪
+                        </button>
+                    </div>
+                    <div id="sp-sandbox-result" style="display: none; margin-top: 1rem; background-color: #f0f0ff; padding: 1rem; border-radius: 8px; border: 2px solid var(--primary-color);">
+                        <p class="small-text" style="margin-bottom: 0.5rem;">Order: <em>"Can I get a Margherita?"</em></p>
+                        <div id="sp-sandbox-response" style="font-size: 1rem; font-style: italic; color: var(--primary-color); min-height: 40px;"></div>
+                    </div>
+                </div>
+
                 <div class="insight-box" style="background-color: #f0f0f0; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
                     <strong>💡 System Prompt Magic:</strong>
                     <p>The system prompt is the laminated card the chef reads before every shift. It defines personality, values, and constraints. Same order + different system prompt = wildly different outputs. The system prompt filters EVERYTHING.</p>
@@ -111,6 +125,9 @@ ${this.systemPrompts.tony.text}
         orderInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.generate();
         });
+
+        const testBtn = this.container.querySelector('#sp-test-btn');
+        testBtn.addEventListener('click', () => this.testCustomPrompt());
     }
 
     generate() {
@@ -175,6 +192,60 @@ ${this.systemPrompts.tony.text}
             this.isAnimating = false;
             generateBtn.disabled = false;
         }
+    }
+
+    testCustomPrompt() {
+        const customSystemEl = this.container.querySelector('#sp-custom-system');
+        const sandboxResult = this.container.querySelector('#sp-sandbox-result');
+        const sandboxResponse = this.container.querySelector('#sp-sandbox-response');
+        const testBtn = this.container.querySelector('#sp-test-btn');
+
+        const promptText = (customSystemEl.value || '').toLowerCase().trim();
+        if (!promptText) return;
+
+        testBtn.disabled = true;
+        sandboxResult.style.display = 'block';
+        sandboxResponse.textContent = '';
+
+        let response;
+
+        if (/rhyme|rhymes|rhyming|poetry|poem/.test(promptText)) {
+            response = '"Ah, a Margherita you seek, so neat! With basil and mozzarella, the taste can\'t be beat! The tomato sauce sings and the crust is divine — your pizza is ready, come stand in the line!"';
+        } else if (/formal|professional|corporate|business|proper/.test(promptText)) {
+            response = '"Good afternoon. I am pleased to confirm receipt of your order for one Margherita pizza. Preparation will commence immediately in accordance with our established quality standards. Estimated completion: twelve minutes."';
+        } else if (/angry|rude|grumpy|mean|hostile|annoyed/.test(promptText)) {
+            response = '"A Margherita?! AGAIN?! Fine. FINE. I\'ll make your boring Margherita. Just tomato, cheese and basil, like every other unimaginative customer. Don\'t even LOOK at my specials board."';
+        } else if (/excited|enthusiastic|happy|amazing|awesome|love/.test(promptText)) {
+            response = '"OH WOW A MARGHERITA!!! YES!!! This is literally my FAVOURITE order!!! The freshest mozzarella, the MOST amazing tomatoes, and basil straight from the garden — this is going to be INCREDIBLE!!!"';
+        } else {
+            response = '"Sure, one Margherita. Tomato, mozzarella, basil. Ready in about ten minutes."';
+        }
+
+        const timeoutId = setTimeout(() => {
+            this.typeOutSandboxResponse(sandboxResponse, response, () => {
+                testBtn.disabled = false;
+            });
+        }, 700);
+
+        this.timers.push(timeoutId);
+    }
+
+    typeOutSandboxResponse(el, text, onComplete) {
+        el.textContent = '';
+        const chars = text.split('');
+        let idx = 0;
+
+        const timer = setInterval(() => {
+            if (idx < chars.length) {
+                el.textContent += chars[idx];
+                idx++;
+            } else {
+                clearInterval(timer);
+                if (onComplete) onComplete();
+            }
+        }, 18);
+
+        this.timers.push(timer);
     }
 
     reset() {

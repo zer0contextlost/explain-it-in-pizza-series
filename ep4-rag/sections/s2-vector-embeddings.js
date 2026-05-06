@@ -2,6 +2,7 @@ let canvasEl, ctx, rafId, resizeRafId;
 let searchActive = false;
 let queryVec = null;
 let selectedDot = null;
+let highlightedRecipes = [];
 
 const recipes = [
   { name: 'Margherita', x: 0.2, y: 0.3, emoji: '🍅', salty: 0.3, spicy: 0.1, doughy: 0.8 },
@@ -37,6 +38,16 @@ export function init(containerEl) {
         <div class="search-results" id="searchResults" style="display: none;">
           <p id="resultsText"></p>
         </div>
+
+        <div class="flavor-search-panel" id="flavorSearchPanel">
+          <div class="flavor-search-label">This is exactly what a vector database does — find by meaning, not by exact name</div>
+          <div class="flavor-search-row">
+            <input type="text" id="flavorSearchInput" placeholder="e.g. spicy, cheesy, classic">
+            <button class="button" id="flavorSearchBtn">Find Similar</button>
+          </div>
+          <div class="flavor-search-results" id="flavorSearchResults" style="display:none;"></div>
+        </div>
+
         <div class="dot-details" id="dotDetails" style="display: none;">
           <h4 id="dotName"></h4>
           <div class="flavor-chart">
@@ -151,20 +162,36 @@ export function init(containerEl) {
         inRadius = dist < 120;
       }
 
+      // Glow ring for flavor-search highlighted recipes
+      const isGlowHighlight = highlightedRecipes.includes(recipe.name);
+      if (isGlowHighlight) {
+        const now = Date.now();
+        const pulse = 0.6 + 0.4 * Math.sin(now / 300);
+        ctx.save();
+        ctx.shadowColor = '#FFD700';
+        ctx.shadowBlur = 18 * pulse;
+        ctx.strokeStyle = '#FFD700';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(coord.x, coord.y, 18, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
       // Dot
-      ctx.fillStyle = inRadius ? '#FFD700' : '#F4A261';
+      ctx.fillStyle = isGlowHighlight ? '#FFD700' : (inRadius ? '#FFD700' : '#F4A261');
       if (selectedDot === recipe.name) {
         ctx.fillStyle = '#E63946';
       }
       ctx.beginPath();
-      ctx.arc(coord.x, coord.y, inRadius ? 12 : 10, 0, Math.PI * 2);
+      ctx.arc(coord.x, coord.y, (inRadius || isGlowHighlight) ? 12 : 10, 0, Math.PI * 2);
       ctx.fill();
 
-      ctx.strokeStyle = inRadius ? '#FFD700' : '#6B3A2A';
+      ctx.strokeStyle = (inRadius || isGlowHighlight) ? '#FFD700' : '#6B3A2A';
       if (selectedDot === recipe.name) {
         ctx.strokeStyle = '#6B3A2A';
       }
-      ctx.lineWidth = inRadius ? 3 : 2;
+      ctx.lineWidth = (inRadius || isGlowHighlight) ? 3 : 2;
       ctx.stroke();
 
       // Emoji
@@ -266,6 +293,104 @@ export function init(containerEl) {
     window.soundManager?.success();
   });
 
+  // Flavor-space search (new "Find Similar" panel)
+  const flavorSearchInput = containerEl.querySelector('#flavorSearchInput');
+  const flavorSearchBtn = containerEl.querySelector('#flavorSearchBtn');
+  const flavorSearchResults = containerEl.querySelector('#flavorSearchResults');
+
+  // Keyword → recipe affinity scoring
+  const flavorKeywords = {
+    spicy:   { recipes: ['Diavolo', 'Pepperoni', 'Spicy Shrimp', 'BBQ Chicken'], label: 'spicy' },
+    hot:     { recipes: ['Diavolo', 'Spicy Shrimp', 'Pepperoni'], label: 'spicy' },
+    cheesy:  { recipes: ['Four Cheese', 'White Pizza', 'Margherita', 'Truffle'], label: 'cheesy' },
+    cheese:  { recipes: ['Four Cheese', 'White Pizza', 'Margherita', 'Truffle'], label: 'cheesy' },
+    classic: { recipes: ['Margherita', 'Marinara', 'Napolitana', 'White Pizza'], label: 'classic' },
+    simple:  { recipes: ['Margherita', 'Marinara', 'Vegetarian'], label: 'simple' },
+    salty:   { recipes: ['Prosciutto', 'Seafood', 'Truffle', 'Pepperoni'], label: 'salty' },
+    meaty:   { recipes: ['Pepperoni', 'BBQ Chicken', 'Prosciutto', 'Diavolo'], label: 'meaty' },
+    smoky:   { recipes: ['BBQ Chicken', 'Prosciutto', 'Pepperoni'], label: 'smoky' },
+    seafood: { recipes: ['Seafood', 'Spicy Shrimp'], label: 'seafood' },
+    fresh:   { recipes: ['Margherita', 'Marinara', 'Vegetarian', 'Caesar Salad'], label: 'fresh' },
+    light:   { recipes: ['Vegetarian', 'Caesar Salad', 'Margherita'], label: 'light' },
+    rich:    { recipes: ['Truffle', 'Four Cheese', 'Prosciutto'], label: 'rich' },
+    garlic:  { recipes: ['Garlic Knot', 'Marinara', 'Margherita'], label: 'garlicky' },
+  };
+
+  flavorSearchBtn.addEventListener('click', () => {
+    const query = flavorSearchInput.value.toLowerCase().trim();
+    if (!query) return;
+
+    // Score each recipe by how many query keywords match
+    const scores = {};
+    recipes.forEach((r) => { scores[r.name] = 0; });
+
+    const words = query.split(/[\s,]+/);
+    let matchedLabels = [];
+    words.forEach((word) => {
+      if (flavorKeywords[word]) {
+        flavorKeywords[word].recipes.forEach((rName) => {
+          if (scores[rName] !== undefined) scores[rName] += 1;
+        });
+        matchedLabels.push(flavorKeywords[word].label);
+      }
+    });
+
+    // Fallback: partial match
+    if (matchedLabels.length === 0) {
+      Object.keys(flavorKeywords).forEach((kw) => {
+        if (query.includes(kw)) {
+          flavorKeywords[kw].recipes.forEach((rName) => {
+            if (scores[rName] !== undefined) scores[rName] += 1;
+          });
+          matchedLabels.push(flavorKeywords[kw].label);
+        }
+      });
+    }
+
+    // Pick top 3 (with score > 0), or nearest by canvas position if no matches
+    const ranked = Object.entries(scores)
+      .filter(([, s]) => s > 0)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 3)
+      .map(([name]) => name);
+
+    if (ranked.length === 0) {
+      flavorSearchResults.style.display = 'block';
+      flavorSearchResults.innerHTML = '<em>No close matches found. Try: spicy, cheesy, classic, meaty, salty…</em>';
+      highlightedRecipes = [];
+      draw();
+      return;
+    }
+
+    highlightedRecipes = ranked;
+
+    const nearestList = ranked.map((name) => {
+      const r = recipes.find((rec) => rec.name === name);
+      return `${r.emoji} <strong>${r.name}</strong>`;
+    }).join(', ');
+
+    flavorSearchResults.style.display = 'block';
+    flavorSearchResults.innerHTML = `<span class="nearest-label">Nearest recipes:</span> ${nearestList}`;
+
+    // Animate the pulsing glow — run a short animation loop
+    let glowFrames = 0;
+    function glowLoop() {
+      draw();
+      glowFrames++;
+      if (glowFrames < 120) {
+        rafId = requestAnimationFrame(glowLoop);
+      }
+    }
+    if (rafId) cancelAnimationFrame(rafId);
+    glowLoop();
+
+    window.soundManager?.success();
+  });
+
+  flavorSearchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') flavorSearchBtn.click();
+  });
+
   canvasEl.addEventListener('click', onCanvasClick);
   canvasEl.addEventListener('mousedown', (e) => {
     if (e.button === 0) {
@@ -292,4 +417,5 @@ export function reset() {
   searchActive = false;
   queryVec = null;
   selectedDot = null;
+  highlightedRecipes = [];
 }

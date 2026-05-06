@@ -56,6 +56,21 @@ class ZeroShotSection {
                     </button>
                 </div>
 
+                <div style="margin-top: 1.5rem; border-top: 2px dashed #ccc; padding-top: 1.5rem;">
+                    <label class="label">Write your own pizza order:</label>
+                    <textarea id="zs-custom-input" placeholder="Describe what you want..." style="width: 100%; margin-top: 0.5rem; min-height: 70px; font-size: 1rem;"></textarea>
+                    <div style="margin-top: 0.75rem; text-align: center;">
+                        <button id="zs-send-order-btn" style="background-color: var(--primary-color); font-size: 1rem; padding: 0.75rem 1.75rem;">
+                            Send Order 📨
+                        </button>
+                    </div>
+                    <div id="zs-custom-result" style="display: none; margin-top: 1rem; background-color: #fdf5e6; padding: 1rem; border-radius: 8px; border: 2px solid var(--secondary-color);">
+                        <div id="zs-custom-emoji" style="font-size: 2.5rem; text-align: center; margin-bottom: 0.5rem;"></div>
+                        <div id="zs-custom-response" style="font-size: 1rem; font-style: italic; color: var(--primary-color); min-height: 40px;"></div>
+                    </div>
+                    <p class="small-text" style="margin-top: 0.5rem; text-align: center; color: #888;">The clearer your order, the better zero-shot works</p>
+                </div>
+
                 <div class="insight-box" style="background-color: #f0f0f0; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
                     <strong>💡 Zero-Shot Reality:</strong>
                     <p>With no examples, the model has to guess. Same vague input = different output every time. The quality bar wobbles because the model is improvising.</p>
@@ -83,6 +98,17 @@ class ZeroShotSection {
 
         generateBtn.addEventListener('click', () => this.generate());
         tryAgainBtn.addEventListener('click', () => this.generateAgain());
+
+        const sendOrderBtn = this.container.querySelector('#zs-send-order-btn');
+        const customInput = this.container.querySelector('#zs-custom-input');
+
+        sendOrderBtn.addEventListener('click', () => this.sendCustomOrder());
+        customInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                this.sendCustomOrder();
+            }
+        });
     }
 
     generate() {
@@ -142,6 +168,68 @@ class ZeroShotSection {
         }, 800);
 
         this.timers.push(timeoutId);
+    }
+
+    sendCustomOrder() {
+        const customInput = this.container.querySelector('#zs-custom-input');
+        const resultEl = this.container.querySelector('#zs-custom-result');
+        const emojiEl = this.container.querySelector('#zs-custom-emoji');
+        const responseEl = this.container.querySelector('#zs-custom-response');
+        const sendBtn = this.container.querySelector('#zs-send-order-btn');
+
+        const text = (customInput.value || '').toLowerCase().trim();
+        if (!text) return;
+
+        sendBtn.disabled = true;
+        resultEl.style.display = 'block';
+        emojiEl.textContent = '⏳';
+        responseEl.textContent = '';
+
+        let emoji, response;
+
+        if (/spicy|hot|jalap|chilli?|sriracha|heat/.test(text)) {
+            emoji = '🌶️🍕🔥';
+            response = '"Ooh, you like it HOT! One fiery pizza coming right up — jalapeños, crushed red pepper, and a drizzle of chilli oil. Bring water."';
+        } else if (/veg(etarian)?|veggie|no meat|plant|tofu|vegan/.test(text)) {
+            emoji = '🥦🍕🌿';
+            response = '"Garden fresh! Roasted peppers, mushrooms, spinach, and artichoke hearts on a tomato base. Zero meat, maximum flavour."';
+        } else if (/meat|beef|pepperoni|sausage|bacon|chicken|carniv/.test(text)) {
+            emoji = '🥩🍕🔥';
+            response = '"MEAT FEAST incoming! Pepperoni, Italian sausage, pulled beef, and crispy bacon. This pizza lifts weights."';
+        } else if (/simple|classic|plain|basic|margherita|traditional/.test(text)) {
+            emoji = '🍕🌿🧀';
+            response = '"Keeping it classic — a true Margherita. San Marzano tomatoes, fresh mozzarella, and a leaf of basil. Perfection needs no extras."';
+        } else {
+            emoji = '😐';
+            response = '"Chef stares blankly... zero-shot only works when the request is clear."';
+        }
+
+        const timeoutId = setTimeout(() => {
+            emojiEl.textContent = emoji;
+            this.typeOutCustomResponse(responseEl, response, () => {
+                sendBtn.disabled = false;
+            });
+        }, 700);
+
+        this.timers.push(timeoutId);
+    }
+
+    typeOutCustomResponse(el, text, onComplete) {
+        el.textContent = '';
+        const chars = text.split('');
+        let idx = 0;
+
+        const timer = setInterval(() => {
+            if (idx < chars.length) {
+                el.textContent += chars[idx];
+                idx++;
+            } else {
+                clearInterval(timer);
+                if (onComplete) onComplete();
+            }
+        }, 18);
+
+        this.timers.push(timer);
     }
 
     generateRandomPizza() {

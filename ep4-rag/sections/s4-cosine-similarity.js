@@ -3,6 +3,7 @@ let rafId, resizeRafId;
 let arrow1 = { angle: Math.PI / 6, length: 120 };
 let arrow2 = { angle: Math.PI / 3, length: 100 };
 let draggingArrow = null;
+let animRafId = null;
 
 export function init(containerEl) {
   const html = `
@@ -22,6 +23,13 @@ export function init(containerEl) {
           <p>1.0 = Identical direction (same flavor profile)</p>
           <p>0.0 = Perpendicular (completely unrelated)</p>
           <p>-1.0 = Opposite direction (opposite flavors)</p>
+        </div>
+        <div class="preset-comparisons">
+          <p><strong>Try a preset:</strong></p>
+          <button class="button preset-btn" id="presetSame">🍕 vs 🍕 Same Pizza</button>
+          <button class="button preset-btn" id="presetDiff">🍕 vs 🥗 Pizza vs Salad</button>
+          <button class="button preset-btn" id="presetClose">🍕 vs 🌶️ Pepperoni vs Diavolo</button>
+          <p class="preset-desc" id="presetDesc"></p>
         </div>
       </div>
     </div>
@@ -213,6 +221,114 @@ export function init(containerEl) {
   canvasEl.addEventListener('mouseup', onCanvasMouseUp);
   canvasEl.addEventListener('mouseleave', onCanvasMouseUp);
 
+  // Touch support
+  function getTouchPos(e) {
+    const rect = canvasEl.getBoundingClientRect();
+    const touch = e.touches[0] || e.changedTouches[0];
+    return {
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top,
+    };
+  }
+
+  canvasEl.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const pos = getTouchPos(e);
+    const centerX = canvasEl.width / 2;
+    const centerY = canvasEl.height / 2;
+    const head1 = getArrowHeadPosition(arrow1, centerX, centerY);
+    const head2 = getArrowHeadPosition(arrow2, centerX, centerY);
+    const dist1 = Math.sqrt((pos.x - head1.x) ** 2 + (pos.y - head1.y) ** 2);
+    const dist2 = Math.sqrt((pos.x - head2.x) ** 2 + (pos.y - head2.y) ** 2);
+    if (dist1 < 28) {
+      draggingArrow = 1;
+    } else if (dist2 < 28) {
+      draggingArrow = 2;
+    }
+  }, { passive: false });
+
+  canvasEl.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    if (!draggingArrow) return;
+    const pos = getTouchPos(e);
+    const centerX = canvasEl.width / 2;
+    const centerY = canvasEl.height / 2;
+    const dx = pos.x - centerX;
+    const dy = pos.y - centerY;
+    const angle = Math.atan2(dy, dx);
+    const length = Math.sqrt(dx * dx + dy * dy);
+    if (draggingArrow === 1) {
+      arrow1.angle = angle;
+      arrow1.length = Math.max(50, Math.min(150, length));
+    } else {
+      arrow2.angle = angle;
+      arrow2.length = Math.max(50, Math.min(150, length));
+    }
+    draw();
+    window.soundManager?.ping();
+  }, { passive: false });
+
+  canvasEl.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    draggingArrow = null;
+  }, { passive: false });
+
+  // Preset comparison buttons
+  const presetDesc = containerEl.querySelector('#presetDesc');
+
+  function animateArrows(targetA1, targetA2, descText) {
+    if (animRafId) cancelAnimationFrame(animRafId);
+    const startA1 = { angle: arrow1.angle, length: arrow1.length };
+    const startA2 = { angle: arrow2.angle, length: arrow2.length };
+    const duration = 500;
+    const start = performance.now();
+
+    function easeInOut(t) {
+      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    }
+
+    function step(now) {
+      const t = Math.min(1, (now - start) / duration);
+      const e = easeInOut(t);
+      arrow1.angle = startA1.angle + (targetA1.angle - startA1.angle) * e;
+      arrow1.length = startA1.length + (targetA1.length - startA1.length) * e;
+      arrow2.angle = startA2.angle + (targetA2.angle - startA2.angle) * e;
+      arrow2.length = startA2.length + (targetA2.length - startA2.length) * e;
+      draw();
+      if (t < 1) {
+        animRafId = requestAnimationFrame(step);
+      } else {
+        presetDesc.textContent = descText;
+        window.soundManager?.success();
+      }
+    }
+    animRafId = requestAnimationFrame(step);
+  }
+
+  containerEl.querySelector('#presetSame').addEventListener('click', () => {
+    animateArrows(
+      { angle: Math.PI / 4, length: 120 },
+      { angle: Math.PI / 4, length: 120 },
+      'Identical flavour profiles — score ~1.0'
+    );
+  });
+
+  containerEl.querySelector('#presetDiff').addEventListener('click', () => {
+    animateArrows(
+      { angle: 0, length: 120 },
+      { angle: Math.PI / 2, length: 120 },
+      'Nothing in common — score ~0.0'
+    );
+  });
+
+  containerEl.querySelector('#presetClose').addEventListener('click', () => {
+    animateArrows(
+      { angle: Math.PI / 6, length: 120 },
+      { angle: Math.PI / 6 + 0.54, length: 115 },
+      'Both spicy and meaty — score ~0.85'
+    );
+  });
+
   window.addEventListener('resize', () => {
     if (resizeRafId) cancelAnimationFrame(resizeRafId);
     resizeRafId = requestAnimationFrame(() => {
@@ -229,7 +345,9 @@ export function init(containerEl) {
 export function reset() {
   if (rafId) cancelAnimationFrame(rafId);
   if (resizeRafId) cancelAnimationFrame(resizeRafId);
+  if (animRafId) cancelAnimationFrame(animRafId);
   arrow1 = { angle: Math.PI / 6, length: 120 };
   arrow2 = { angle: Math.PI / 3, length: 100 };
   draggingArrow = null;
+  animRafId = null;
 }

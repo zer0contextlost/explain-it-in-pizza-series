@@ -59,6 +59,21 @@ class Section7 {
         order: "Just like my nonna made",
         before: "🍕 (generic pizza)",
         after: "🍕❤️ (understands you want nostalgia & care)"
+      },
+      {
+        order: "Write me a haiku about pizza",
+        before: "❓ Pizza is a food dish made from dough with tomato sauce and toppings including cheese, vegetables, and meats baked in an oven...",
+        after: "🍕📜 "Dough stretched thin and wide / Tomatoes blush under heat / One perfect first bite""
+      },
+      {
+        order: "List 3 pizza toppings",
+        before: "🧀 Pizza toppings are incredibly diverse and there are many wonderful options to choose from depending on personal preference and regional style...",
+        after: "✅ 1. Mozzarella  2. Pepperoni  3. Fresh basil"
+      },
+      {
+        order: "What's wrong with this pizza? (soggy base, too much sauce, burnt crust)",
+        before: "🤷 Hmm, the pizza could perhaps be improved in some ways.",
+        after: "🔍 Three issues: 1) Base is waterlogged — rest dough longer before topping. 2) Sauce overload drowns the cheese — use a thin even layer. 3) Crust burnt — oven too hot or left in too long."
       }
     ];
 

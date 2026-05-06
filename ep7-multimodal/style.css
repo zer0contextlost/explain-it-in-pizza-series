@@ -208,29 +208,15 @@ body {
   100% { opacity: 1; transform: scale(1); }
 }
 
-/* Main Content */
-.main-content {
-  max-width: 1200px;
-  margin: 3rem auto;
-  padding: 0 2rem;
-  padding-top: 100px;
-}
-
 /* Sections */
 .section {
   padding: 100px 2rem;
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  align-items: center;
   opacity: 0;
   transform: translateY(30px);
   animation: sectionEnter 0.5s ease-out forwards;
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 3rem;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -252,14 +238,14 @@ body {
   }
 }
 
-#section-1 { animation-delay: 0s; }
-#section-2 { animation-delay: 0.1s; }
-#section-3 { animation-delay: 0.2s; }
-#section-4 { animation-delay: 0.3s; }
-#section-5 { animation-delay: 0.4s; }
-#section-6 { animation-delay: 0.5s; }
-#section-7 { animation-delay: 0.6s; }
-#section-8 { animation-delay: 0.7s; }
+#section-1 { background: linear-gradient(135deg, #fff3e0 0%, var(--color-cream) 100%); animation-delay: 0s; }
+#section-2 { background: linear-gradient(135deg, var(--color-cream) 0%, #e8f5e9 100%); animation-delay: 0.1s; }
+#section-3 { background: linear-gradient(135deg, #fce4ec 0%, var(--color-cream) 100%); animation-delay: 0.2s; }
+#section-4 { background: linear-gradient(135deg, var(--color-cream) 0%, #f3e5f5 100%); animation-delay: 0.3s; }
+#section-5 { background: linear-gradient(135deg, #fff9e6 0%, var(--color-cream) 100%); animation-delay: 0.4s; }
+#section-6 { background: linear-gradient(135deg, var(--color-cream) 0%, #e0f2f1 100%); animation-delay: 0.5s; }
+#section-7 { background: linear-gradient(135deg, #fef5e7 0%, var(--color-cream) 100%); animation-delay: 0.6s; }
+#section-8 { background: linear-gradient(135deg, var(--color-cream) 0%, #f1e9dc 100%); animation-delay: 0.7s; }
 
 .section-container {
   max-width: 1200px;
@@ -320,7 +306,7 @@ body {
 /* Responsive */
 @media (max-width: 768px) {
   .section {
-    padding: 1.5rem;
+    padding: 60px 1rem;
     min-height: auto;
   }
 
@@ -1087,11 +1073,6 @@ input[type="text"] {
 
 /* Responsive section content */
 @media (max-width: 768px) {
-  .main-content {
-    margin: 1.5rem auto;
-    padding-top: 80px;
-  }
-
   .controls {
     flex-direction: column;
   }

@@ -128,6 +128,19 @@ class RolePromptingSection {
                     <div class="pizza-display" id="role-pizza" style="font-size: 3rem;">🍕</div>
                 </div>
 
+                <div style="margin-top: 1.5rem; border-top: 2px dashed #ccc; padding-top: 1.5rem;">
+                    <div style="text-align: center; margin-bottom: 0.75rem;">
+                        <button id="role-mashup-btn" style="background-color: #8e44ad; font-size: 1rem; padding: 0.75rem 1.75rem; color: white;">
+                            🎲 Random Role Mashup
+                        </button>
+                    </div>
+                    <div id="role-mashup-result" style="display: none; margin-top: 1rem; background-color: #f5eeff; padding: 1rem; border-radius: 8px; border: 2px solid #8e44ad;">
+                        <p id="role-mashup-label" style="font-weight: bold; color: #8e44ad; margin-bottom: 0.5rem; text-align: center;"></p>
+                        <div id="role-mashup-response" style="font-size: 1rem; font-style: italic; color: var(--primary-color); min-height: 40px;"></div>
+                    </div>
+                    <p class="small-text" style="margin-top: 0.5rem; text-align: center; color: #888;">When prompts combine personas, results get... interesting</p>
+                </div>
+
                 <div class="insight-box" style="background-color: #f0f0f0; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
                     <strong>💡 Role Prompting Power:</strong>
                     <p>The role is not just a label—it changes how the model thinks. A Michelin chef doesn't just add fancy words; they think about precision, technique, and presentation. Role prompting is identity + values + methodology.</p>
@@ -192,6 +205,9 @@ class RolePromptingSection {
         });
 
         generateBtn.addEventListener('click', () => this.generate());
+
+        const mashupBtn = this.container.querySelector('#role-mashup-btn');
+        mashupBtn.addEventListener('click', () => this.doMashup());
     }
 
     selectRole(roleKey) {
@@ -249,6 +265,79 @@ class RolePromptingSection {
             this.isAnimating = false;
             generateBtn.disabled = false;
         }
+    }
+
+    doMashup() {
+        const mashupBtn = this.container.querySelector('#role-mashup-btn');
+        const mashupResult = this.container.querySelector('#role-mashup-result');
+        const mashupLabel = this.container.querySelector('#role-mashup-label');
+        const mashupResponse = this.container.querySelector('#role-mashup-response');
+
+        const roleKeys = Object.keys(this.roles);
+        // Pick 2 distinct roles randomly
+        const shuffled = roleKeys.slice().sort(() => Math.random() - 0.5);
+        const [keyA, keyB] = shuffled;
+        const roleA = this.roles[keyA];
+        const roleB = this.roles[keyB];
+
+        mashupBtn.disabled = true;
+        mashupResult.style.display = 'block';
+        mashupLabel.textContent = `${roleA.emoji} ${roleA.name}  +  ${roleB.emoji} ${roleB.name}`;
+        mashupResponse.textContent = '⏳ Fusing personas...';
+
+        const mashupResponses = {
+            'michelin+teen': '"Yo — this here is, like, a DECONSTRUCTED pizza experience, yeah? Truffle oil, bro. That\'ll be $8. But make it, like, artisanal. 👌✨"',
+            'teen+michelin': '"Yo — this here is, like, a DECONSTRUCTED pizza experience, yeah? Truffle oil, bro. That\'ll be $8. But make it, like, artisanal. 👌✨"',
+            'michelin+molecular': '"Behold: a sous-vide pizza sphere encased in nitrogen-frozen mozzarella foam. I call it \'Pizza 2.0\'. It has six Michelin stars and also explodes flavour chemicals in your mouth.\'"',
+            'molecular+michelin': '"Behold: a sous-vide pizza sphere encased in nitrogen-frozen mozzarella foam. I call it \'Pizza 2.0\'. It has six Michelin stars and also explodes flavour chemicals in your mouth.\'"',
+            'michelin+nonna': '"With the utmost precision and devotion, I present: Nonna\'s Deconstructed Margherita — hand-pulled basil from my garden at 6am, tears of joy included in the sauce. A 3-star memory."',
+            'nonna+michelin': '"With the utmost precision and devotion, I present: Nonna\'s Deconstructed Margherita — hand-pulled basil from my garden at 6am, tears of joy included in the sauce. A 3-star memory."',
+            'michelin+health': '"A precision-plated, macro-optimised pizza: cauliflower sphere with 40g protein, micro-arugula garnish, and a truffle-infused protein shake on the side. Peak performance, peak artistry."',
+            'health+michelin': '"A precision-plated, macro-optimised pizza: cauliflower sphere with 40g protein, micro-arugula garnish, and a truffle-infused protein shake on the side. Peak performance, peak artistry."',
+            'teen+molecular': '"So I literally made your pizza into SPHERES, bro. It\'s molecular. It slaps. The cheese is, like, crystallised powder? Very advanced. That\'ll be $8."',
+            'molecular+teen': '"So I literally made your pizza into SPHERES, bro. It\'s molecular. It slaps. The cheese is, like, crystallised powder? Very advanced. That\'ll be $8."',
+            'teen+nonna': '"Yo here\'s your pizza, it\'s fire — like literally Nonna made it, she won\'t stop feeding you, bro, just EAT IT, mangia mangia, $8, also she made extra."',
+            'nonna+teen': '"Yo here\'s your pizza, it\'s fire — like literally Nonna made it, she won\'t stop feeding you, bro, just EAT IT, mangia mangia, $8, also she made extra."',
+            'teen+health': '"Bro your pizza is, like, cauliflower crust and nutritional yeast — it SLAPS though, 40g protein, zero guilt, $8. You\'re gonna be jacked."',
+            'health+teen': '"Bro your pizza is, like, cauliflower crust and nutritional yeast — it SLAPS though, 40g protein, zero guilt, $8. You\'re gonna be jacked."',
+            'molecular+nonna': '"Tesoro, I have molecularly deconstructed your Nonna\'s recipe into edible nostalgia spheres. Each bite contains 0.3ml of love, scientifically quantified. Mangia!"',
+            'nonna+molecular': '"Tesoro, I have molecularly deconstructed your Nonna\'s recipe into edible nostalgia spheres. Each bite contains 0.3ml of love, scientifically quantified. Mangia!"',
+            'molecular+health': '"I\'ve eliminated all flavour compounds and replaced them with optimised nutrient vectors suspended in agar foam. The mouthfeel is scientifically identical to pizza. Protein: 40g."',
+            'health+molecular': '"I\'ve eliminated all flavour compounds and replaced them with optimised nutrient vectors suspended in agar foam. The mouthfeel is scientifically identical to pizza. Protein: 40g."',
+            'nonna+health': '"Bellissimo, but WHAT is this cauliflower base?! My grandmother would weep! Still — you are too thin, eat, it is organic sprouted grain, good for you, mangia!"',
+            'health+nonna': '"Bellissimo, but WHAT is this cauliflower base?! My grandmother would weep! Still — you are too thin, eat, it is organic sprouted grain, good for you, mangia!"'
+        };
+
+        const comboKey = `${keyA}+${keyB}`;
+        const fallbackResponse = `"${roleA.name} meets ${roleB.name}: It's... confusing. But somehow delicious? The pizza smells like ${roleA.emoji} and tastes like ${roleB.emoji}. Nobody can explain it."`;
+        const finalResponse = mashupResponses[comboKey] || fallbackResponse;
+
+        const timeoutId = setTimeout(() => {
+            mashupResponse.textContent = '';
+            this.typeMashupResponse(mashupResponse, finalResponse, () => {
+                mashupBtn.disabled = false;
+            });
+        }, 900);
+
+        this.timers.push(timeoutId);
+    }
+
+    typeMashupResponse(el, text, onComplete) {
+        el.textContent = '';
+        const chars = text.split('');
+        let idx = 0;
+
+        const timer = setInterval(() => {
+            if (idx < chars.length) {
+                el.textContent += chars[idx];
+                idx++;
+            } else {
+                clearInterval(timer);
+                if (onComplete) onComplete();
+            }
+        }, 18);
+
+        this.timers.push(timer);
     }
 
     reset() {

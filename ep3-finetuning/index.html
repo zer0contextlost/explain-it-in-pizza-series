@@ -6,7 +6,7 @@
     <title>Explain It In Pizza: Fine-Tuning & RLHF</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -35,7 +35,7 @@
     </nav>
 
     <div id="app" class="app-container">
-        <header class="hero">
+        <section class="hero">
             <h1 class="hero-title">Explain It In Pizza: Fine-Tuning & RLHF</h1>
             <p class="hero-subtitle">From culinary school to YOUR neighborhood joint 🍕</p>
             <div class="hero-visual">
@@ -57,7 +57,7 @@
                     <div class="apron-badge">Apron</div>
                 </div>
             </div>
-        </header>
+        </section>
 
         <main class="sections-container">
             <!-- S1: Pre-Training vs Fine-Tuning -->
@@ -92,6 +92,31 @@
                         <p class="order-text">Customer: "Can I get something delicious?"</p>
                         <button id="send-order-btn" class="action-btn">Send Order</button>
                         <div id="order-result" class="result-display"></div>
+                    </div>
+
+                    <!-- Comparison panel: with vs without fine-tuning -->
+                    <div class="comparison-panel-wrapper">
+                        <h3 class="comparison-heading">What happens without fine-tuning?</h3>
+                        <p class="comparison-subtext">Pick an order and see the difference one extra training step makes.</p>
+                        <div class="preset-order-btns">
+                            <button class="preset-btn" data-order="spicy">Make me something spicy</button>
+                            <button class="preset-btn" data-order="classic">I want a classic</button>
+                            <button class="preset-btn" data-order="surprise">Surprise me!</button>
+                            <button class="preset-btn" data-order="healthy">Something healthy</button>
+                        </div>
+                        <div class="comparison-columns">
+                            <div class="comparison-col comparison-col--before">
+                                <div class="comparison-col-label">General Chef</div>
+                                <div class="comparison-col-sublabel">(Pre-trained only)</div>
+                                <div id="general-chef-response" class="comparison-response"></div>
+                            </div>
+                            <div class="comparison-col comparison-col--after">
+                                <div class="comparison-col-label">Your Pizza Chef</div>
+                                <div class="comparison-col-sublabel">(Fine-tuned)</div>
+                                <div id="pizza-chef-response" class="comparison-response"></div>
+                            </div>
+                        </div>
+                        <p id="comparison-tagline" class="comparison-tagline hidden">Same base model. One extra training step makes all the difference.</p>
                     </div>
                 </div>
                 <div class="narrator-box">
@@ -162,6 +187,21 @@
                         <p id="preference-count">0 / 10 choices</p>
                     </div>
                     <div id="pref-complete-msg" class="completion-msg hidden"></div>
+
+                    <!-- Preference dataset tracker -->
+                    <div class="pref-dataset-tracker">
+                        <div class="pref-dataset-header">
+                            <span class="pref-dataset-title">Your Preference Dataset:</span>
+                            <span id="pref-dataset-count" class="pref-dataset-count">0 pairs collected</span>
+                        </div>
+                        <ul id="pref-history-list" class="pref-history-list">
+                            <li class="pref-history-empty">No choices yet — start rating pizzas above!</li>
+                        </ul>
+                        <button id="export-dataset-btn" class="action-btn export-btn" disabled>Export Dataset</button>
+                        <div id="export-json-block" class="export-json-block hidden">
+                            <pre id="export-json-content" class="export-json-content"></pre>
+                        </div>
+                    </div>
                 </div>
                 <div class="narrator-box">
                     <p id="narrator-3" class="narrator-text"></p>
@@ -223,6 +263,15 @@
                         <input type="range" id="speed-slider" min="0.3" max="2" step="0.1" value="1" class="slider">
                         <div id="cycle-counter" class="counter-display">Cycles: 0</div>
                     </div>
+                    <div class="speed-run-controls">
+                        <button id="normal-speed-btn" class="speed-btn speed-btn--active">Normal Speed</button>
+                        <button id="fast-speed-btn" class="speed-btn">10x Speed</button>
+                    </div>
+                    <div id="converged-msg" class="converged-msg hidden">
+                        <span class="converged-pizza">🍕</span>
+                        Converged! Chef has learned your preferences.
+                        <span class="converged-pizza">🍕</span>
+                    </div>
                     <div id="pipeline-complete-msg" class="completion-msg hidden"></div>
                 </div>
                 <div class="narrator-box">
@@ -275,7 +324,7 @@
                     </div>
                     <div class="instruction-nav">
                         <button id="prev-instruction-btn" class="nav-btn">← Previous</button>
-                        <span id="instruction-counter" class="counter-text">1 / 8</span>
+                        <span id="instruction-counter" class="counter-text">1 / 11</span>
                         <button id="next-instruction-btn" class="nav-btn">Next →</button>
                     </div>
                 </div>

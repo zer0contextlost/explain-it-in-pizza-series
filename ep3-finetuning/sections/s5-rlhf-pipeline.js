@@ -12,6 +12,11 @@ class Section5 {
     this.cycleCounter = this.containerEl.querySelector('#cycle-counter');
     this.completeMsg = this.containerEl.querySelector('#pipeline-complete-msg');
 
+    // Speed run elements
+    this.normalSpeedBtn = this.containerEl.querySelector('#normal-speed-btn');
+    this.fastSpeedBtn = this.containerEl.querySelector('#fast-speed-btn');
+    this.convergedMsg = this.containerEl.querySelector('#converged-msg');
+
     this.ctx = null;
     this.cycles = 0;
     this.maxCycles = 20;
@@ -19,6 +24,7 @@ class Section5 {
     this.isAnimating = false;
     this.animationId = null;
     this.resizeObserver = null;
+    this.speedMode = 'normal'; // 'normal' | 'fast'
 
     this.init();
   }
@@ -40,6 +46,21 @@ class Section5 {
     this.speedSlider.addEventListener('input', () => {
       // Update just affects speed, not visuals
     });
+
+    if (this.normalSpeedBtn) {
+      this.normalSpeedBtn.addEventListener('click', () => this.setSpeedMode('normal'));
+    }
+    if (this.fastSpeedBtn) {
+      this.fastSpeedBtn.addEventListener('click', () => this.setSpeedMode('fast'));
+    }
+  }
+
+  setSpeedMode(mode) {
+    this.speedMode = mode;
+    if (this.normalSpeedBtn && this.fastSpeedBtn) {
+      this.normalSpeedBtn.classList.toggle('speed-btn--active', mode === 'normal');
+      this.fastSpeedBtn.classList.toggle('speed-btn--active', mode === 'fast');
+    }
   }
 
   resizeCanvas() {
@@ -141,8 +162,18 @@ class Section5 {
 
   startFlywheel() {
     if (this.isAnimating) return;
+
+    if (this.speedMode === 'fast') {
+      this._runSpeedRun();
+    } else {
+      this._runNormal();
+    }
+  }
+
+  _runNormal() {
     this.isAnimating = true;
     this.spinBtn.disabled = true;
+    if (this.convergedMsg) this.convergedMsg.classList.add('hidden');
 
     const speed = parseFloat(this.speedSlider.value);
     const cycleDuration = 1000 / speed; // Convert speed to ms per cycle
@@ -171,6 +202,47 @@ class Section5 {
     };
 
     animate();
+  }
+
+  _runSpeedRun() {
+    // Run 10 cycles rapidly (60ms each) to demonstrate convergence
+    this.isAnimating = true;
+    this.spinBtn.disabled = true;
+    if (this.convergedMsg) this.convergedMsg.classList.add('hidden');
+
+    const FAST_CYCLES = 10;
+    const FAST_INTERVAL = 60; // ms per cycle
+    let cyclesRun = 0;
+
+    const tick = () => {
+      if (cyclesRun >= FAST_CYCLES || this.cycles >= this.maxCycles) {
+        this.spinBtn.disabled = false;
+        this.isAnimating = false;
+        this._showConverged();
+        return;
+      }
+
+      // Bigger quality jump per cycle at 10x speed so improvement is visible
+      this.cycles++;
+      this.qualityBar += 0.8 + Math.random() * 0.8;
+      cyclesRun++;
+      this.updateCounterDisplay();
+      this.draw();
+
+      this.animationId = setTimeout(tick, FAST_INTERVAL);
+    };
+
+    tick();
+  }
+
+  _showConverged() {
+    if (this.convergedMsg) {
+      this.convergedMsg.classList.remove('hidden');
+    }
+    // Also show full completion if max reached
+    if (this.cycles >= this.maxCycles) {
+      this.showComplete();
+    }
   }
 
   updateCounterDisplay() {

@@ -371,12 +371,12 @@ button {
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-button:hover:not(:disabled) {
+button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0,0,0,0.2);
 }
 
-button:active:not(:disabled) {
+button:active {
   transform: translateY(0);
 }
 
@@ -390,7 +390,7 @@ button:disabled {
   color: white;
 }
 
-.btn-primary:hover:not(:disabled) {
+.btn-primary:hover {
   background: #c1303a;
 }
 
@@ -399,7 +399,7 @@ button:disabled {
   color: white;
 }
 
-.btn-secondary:hover:not(:disabled) {
+.btn-secondary:hover {
   background: #207d73;
 }
 
@@ -408,7 +408,7 @@ button:disabled {
   color: var(--color-charcoal);
 }
 
-.btn-success:hover:not(:disabled) {
+.btn-success:hover {
   background: #d4a844;
 }
 

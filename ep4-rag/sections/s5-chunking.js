@@ -43,6 +43,11 @@ export function init(containerEl) {
           <span>1 Page</span>
           <span>Whole Chapter</span>
         </div>
+        <div class="chunk-extreme-btns">
+          <button class="button secondary chunk-extreme-btn" id="btnWholeBook">📜 No Chunking (Whole Book)</button>
+          <button class="button secondary chunk-extreme-btn" id="btnSingleWords">✂️ Over-Chunked (Single Words)</button>
+          <button class="button chunk-sweet-btn" id="btnSweetSpot">✅ Sweet Spot</button>
+        </div>
       </div>
       <div class="chunking-display">
         <div class="pages-section">
@@ -70,13 +75,54 @@ export function init(containerEl) {
   const chunkCount = containerEl.querySelector('#chunkCount');
   const chunkAnalysis = containerEl.querySelector('#chunkAnalysis');
 
+  let sweetSpotActive = false;
+
   function renderChunks() {
     const size = parseInt(chunkSlider.value);
     let chunks = [];
 
     if (size === 1) {
-      chunks = sentences.slice(0, 5).map((s) => ({ text: s.trim() + '.', warning: s.length < 20 }));
-    } else if (size === 2) {
+      // Over-chunked: show all individual words as tiny chips
+      const allWords = sentences.join(' ').split(/\s+/).filter(Boolean);
+      chunksDisplay.innerHTML = '';
+      chunkCount.textContent = allWords.length;
+      allWords.forEach((word) => {
+        const chip = document.createElement('span');
+        chip.className = 'word-chip';
+        chip.textContent = word;
+        chunksDisplay.appendChild(chip);
+      });
+      const banner = document.createElement('div');
+      banner.className = 'chunk-extreme-banner chunk-extreme-small';
+      banner.textContent = 'Too small — no context, meaningless alone';
+      chunksDisplay.prepend(banner);
+      chunkAnalysis.innerHTML = `<p style="padding: 1rem; background: rgba(230,57,70,0.12); border-radius: 8px; color: #E63946;">❌ Too small: Individual words have no context. "Cook" — cook what? "Mozzarella" — in what recipe?</p>`;
+      sweetSpotActive = false;
+      updateSweetSpotHighlight();
+      window.soundManager?.plop();
+      return;
+    }
+
+    if (size === 4) {
+      // No chunking: one giant block
+      chunksDisplay.innerHTML = '';
+      chunkCount.textContent = 1;
+      const card = document.createElement('div');
+      card.className = 'chunk-card chunk-whole-book';
+      card.innerHTML = `
+        <div class="chunk-index">Card 1</div>
+        <p>${sentences.join('. ')}.</p>
+        <div style="color: #E63946; font-weight: bold; margin-top: 0.5rem;">⚠️ Too big for the apron pocket — chef can't carry this</div>
+      `;
+      chunksDisplay.appendChild(card);
+      chunkAnalysis.innerHTML = `<p style="padding: 1rem; background: rgba(230,57,70,0.12); border-radius: 8px; color: #E63946;">❌ Way too big: The entire 200-page memoir on one card. It droops out of the pocket. Too much. Too overwhelming.</p>`;
+      sweetSpotActive = false;
+      updateSweetSpotHighlight();
+      window.soundManager?.plop();
+      return;
+    }
+
+    if (size === 2) {
       for (let i = 0; i < sentences.length; i += 3) {
         chunks.push({
           text: sentences.slice(i, i + 3).join('. ') + '.',
@@ -90,8 +136,6 @@ export function init(containerEl) {
           warning: false,
         });
       }
-    } else if (size === 4) {
-      chunks = [{ text: sentences.join('. ') + '.', warning: true }];
     }
 
     chunksDisplay.innerHTML = '';
@@ -100,14 +144,13 @@ export function init(containerEl) {
     chunks.forEach((chunk, idx) => {
       const card = document.createElement('div');
       card.className = 'chunk-card';
-      if (chunk.warning) {
-        card.style.borderColor = '#E63946';
-        card.style.background = '#fff0f0';
+      if (sweetSpotActive && size === 2) {
+        card.style.borderColor = '#2ECC71';
+        card.style.background = 'rgba(46,204,113,0.08)';
       }
       card.innerHTML = `
         <div class="chunk-index">Card ${idx + 1}</div>
         <p>${chunk.text}</p>
-        ${chunk.warning ? '<div style="color: #E63946; font-weight: bold;">⚠️ TOO BIG FOR POCKET!</div>' : ''}
       `;
       card.style.animation = `slideLeft 0.3s ease ${idx * 0.1}s forwards`;
       card.style.opacity = 0;
@@ -116,21 +159,61 @@ export function init(containerEl) {
 
     // Analysis
     let analysis = '';
-    if (size === 1) {
-      analysis = '❌ Too small: Cards are incomplete. "Cook at exactly..." - where? Incomplete thoughts.';
-    } else if (size === 2) {
-      analysis = '✅ PERFECT: Each card fits in the chef\'s apron pocket. Complete thoughts. He can grab one and have everything he needs.';
+    if (size === 2) {
+      const prefix = sweetSpotActive ? '🌟 SWEET SPOT! ' : '';
+      analysis = `${prefix}✅ PERFECT: Each card fits in the chef's apron pocket. Complete thoughts. He can grab one and have everything he needs.`;
     } else if (size === 3) {
       analysis = '⚠️ Getting big: Still fits but is getting unwieldy. The chef has to focus on multiple ideas per card.';
-    } else if (size === 4) {
-      analysis = '❌ Way too big: The entire 200-page memoir on one card. It droops out of the pocket. Too much. Too overwhelming.';
     }
-    chunkAnalysis.innerHTML = `<p style="padding: 1rem; background: rgba(244, 162, 97, 0.2); border-radius: 8px;">${analysis}</p>`;
+    const bgColor = (sweetSpotActive && size === 2)
+      ? 'rgba(46, 204, 113, 0.2)'
+      : 'rgba(244, 162, 97, 0.2)';
+    chunkAnalysis.innerHTML = `<p style="padding: 1rem; background: ${bgColor}; border-radius: 8px; transition: background 0.4s;">${analysis}</p>`;
 
     window.soundManager?.plop();
   }
 
-  chunkSlider.addEventListener('input', renderChunks);
+  function updateSweetSpotHighlight() {
+    const btn = containerEl.querySelector('#btnSweetSpot');
+    if (sweetSpotActive) {
+      btn.style.background = '#2ECC71';
+      btn.style.color = '#fff';
+      btn.style.boxShadow = '0 0 10px rgba(46,204,113,0.6)';
+    } else {
+      btn.style.background = '';
+      btn.style.color = '';
+      btn.style.boxShadow = '';
+    }
+  }
+
+  chunkSlider.addEventListener('input', () => {
+    sweetSpotActive = false;
+    updateSweetSpotHighlight();
+    renderChunks();
+  });
+
+  containerEl.querySelector('#btnWholeBook').addEventListener('click', () => {
+    sweetSpotActive = false;
+    chunkSlider.value = 4;
+    updateSweetSpotHighlight();
+    renderChunks();
+  });
+
+  containerEl.querySelector('#btnSingleWords').addEventListener('click', () => {
+    sweetSpotActive = false;
+    chunkSlider.value = 1;
+    updateSweetSpotHighlight();
+    renderChunks();
+  });
+
+  containerEl.querySelector('#btnSweetSpot').addEventListener('click', () => {
+    sweetSpotActive = true;
+    chunkSlider.value = 2;
+    updateSweetSpotHighlight();
+    renderChunks();
+    window.soundManager?.success();
+  });
+
   renderChunks();
 }
 

@@ -18,6 +18,30 @@ const ragCards = {
   ],
 };
 
+const recipeDetails = {
+  'How do I make authentic Margherita?': {
+    title: 'Margherita 🍅',
+    origin: 'Naples, Italy — est. tradition since 1889',
+    ingredients: ['San Marzano tomatoes', 'Fresh buffalo mozzarella', 'Basil picked at dawn', 'Extra-virgin olive oil'],
+    method: 'Cook at exactly 450°F for 4 minutes. Let dough rise under Sicilian sun for 24 hours.',
+    emoji: '🍅',
+  },
+  'What makes Diavolo spicy?': {
+    title: 'Diavolo 🔥',
+    origin: 'Calabria, Italy — the devil\'s pizza',
+    ingredients: ['Calabrian red pepper flakes', 'Aged garlic', 'Fennel seed', 'San Marzano tomatoes'],
+    method: 'Layer spices like a symphony. Heat must build gradually. Not for the faint of heart.',
+    emoji: '🔥',
+  },
+  'How do I cook fresh seafood pizza?': {
+    title: 'Seafood Marinara 🦐',
+    origin: 'Tyrrhenian Coast — fishermen\'s tradition',
+    ingredients: ['Fresh Tyrrhenian clams (same-day only)', 'Large sweet shrimp', 'Sea salt', 'Olive oil'],
+    method: 'Shrimp cook for no more than 90 seconds. Salt the shellfish liberally. The sea flavor must sing.',
+    emoji: '🦐',
+  },
+};
+
 export function init(containerEl) {
   const html = `
     <div class="context-wrapper">
@@ -48,6 +72,29 @@ export function init(containerEl) {
           <div class="chef-answer" id="chefAnswer"></div>
         </div>
       </div>
+
+      <div class="internal-view-toggle-row">
+        <button class="button secondary" id="toggleInternalViewBtn">Show Chef's Internal View 👁️</button>
+      </div>
+
+      <div class="chef-internal-view" id="chefInternalView" style="display:none;">
+        <h3>Chef's Internal View</h3>
+        <div class="internal-view-layout">
+          <div class="internal-recipe-card" id="internalRecipeCard">
+            <div class="recipe-card-placeholder">Ask the chef a question first…</div>
+          </div>
+          <div class="internal-inject-arrow" id="internalInjectArrow">
+            <div class="inject-arrow-line"></div>
+            <div class="inject-arrow-label">taped to the cutting board</div>
+            <div class="inject-arrow-tip">▶</div>
+          </div>
+          <div class="internal-question-box" id="internalQuestionBox">
+            <div class="question-box-label">Question</div>
+            <div class="question-box-text" id="internalQuestionText">—</div>
+          </div>
+        </div>
+        <p class="internal-view-explain">The retrieved recipe card is injected directly into the chef's working space alongside the question — this is context injection.</p>
+      </div>
     </div>
   `;
 
@@ -62,6 +109,67 @@ export function init(containerEl) {
   const chefAnswer = containerEl.querySelector('#chefAnswer');
   const withoutRAGBtn = containerEl.querySelector('#withoutRAGBtn');
   const withRAGBtn = containerEl.querySelector('#withRAGBtn');
+  const toggleInternalViewBtn = containerEl.querySelector('#toggleInternalViewBtn');
+  const chefInternalView = containerEl.querySelector('#chefInternalView');
+  const internalRecipeCard = containerEl.querySelector('#internalRecipeCard');
+  const internalQuestionText = containerEl.querySelector('#internalQuestionText');
+  const internalInjectArrow = containerEl.querySelector('#internalInjectArrow');
+
+  let internalViewVisible = false;
+  let lastQuestion = null;
+
+  toggleInternalViewBtn.addEventListener('click', () => {
+    internalViewVisible = !internalViewVisible;
+    chefInternalView.style.display = internalViewVisible ? 'block' : 'none';
+    toggleInternalViewBtn.textContent = internalViewVisible
+      ? 'Hide Chef\'s Internal View'
+      : 'Show Chef\'s Internal View 👁️';
+    if (internalViewVisible && lastQuestion) {
+      populateInternalView(lastQuestion);
+    }
+    window.soundManager?.ping();
+  });
+
+  function populateInternalView(question) {
+    internalQuestionText.textContent = question;
+    const detail = recipeDetails[question];
+
+    if (!useRAG || !detail) {
+      internalRecipeCard.innerHTML = `
+        <div class="recipe-card-empty">
+          <div class="recipe-card-icon">📭</div>
+          <p>No recipe retrieved — chef is working from memory only.</p>
+        </div>
+      `;
+      internalInjectArrow.style.opacity = '0.3';
+      return;
+    }
+
+    internalInjectArrow.style.opacity = '1';
+    internalRecipeCard.innerHTML = `
+      <div class="recipe-card-retrieved">
+        <div class="recipe-card-header">
+          <span class="recipe-card-emoji">${detail.emoji}</span>
+          <span class="recipe-card-title">${detail.title}</span>
+        </div>
+        <div class="recipe-card-origin">${detail.origin}</div>
+        <div class="recipe-card-section">
+          <strong>Ingredients:</strong>
+          <ul>${detail.ingredients.map((i) => `<li>${i}</li>`).join('')}</ul>
+        </div>
+        <div class="recipe-card-section">
+          <strong>Method:</strong>
+          <p>${detail.method}</p>
+        </div>
+        <div class="recipe-card-tape">📌 taped to cutting board</div>
+      </div>
+    `;
+
+    // Animate the arrow briefly
+    internalInjectArrow.classList.remove('inject-animate');
+    void internalInjectArrow.offsetWidth; // force reflow
+    internalInjectArrow.classList.add('inject-animate');
+  }
 
   function updateContextWindow(cards) {
     windowContent.innerHTML = '';
@@ -93,6 +201,8 @@ export function init(containerEl) {
       alert('Ask the chef something!');
       return;
     }
+
+    lastQuestion = question;
 
     let answer = '';
     let cards = [];
@@ -134,6 +244,11 @@ export function init(containerEl) {
     }
 
     chefAnswer.innerHTML = answer;
+
+    // Update internal view if it's visible
+    if (internalViewVisible) {
+      populateInternalView(question);
+    }
   });
 
   withRAGBtn.addEventListener('click', () => {
