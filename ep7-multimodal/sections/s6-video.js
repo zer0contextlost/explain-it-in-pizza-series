@@ -104,7 +104,7 @@ export function initSection6(containerEl) {
     });
 
     pauseBtn.addEventListener('click', () => {
-        cancelAnimationFrame(animationIdS6);
+        clearTimeout(animationIdS6);
         isPlayingS6 = false;
         isAnimatingS6 = false;
         playBtn.disabled = false;
@@ -112,7 +112,7 @@ export function initSection6(containerEl) {
     });
 
     resetBtn.addEventListener('click', () => {
-        cancelAnimationFrame(animationIdS6);
+        clearTimeout(animationIdS6);
         isAnimatingS6 = false;
         isPlayingS6 = false;
         currentFrame = 0;

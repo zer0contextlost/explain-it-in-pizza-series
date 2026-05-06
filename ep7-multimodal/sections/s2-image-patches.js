@@ -7,6 +7,13 @@ let gridStep = 0;
 let hoverPatchIdx = -1;
 let hoverTokenIdx = -1;
 
+const patchLabels = [
+    'Crust', 'Crust', 'Crust', 'Crust',
+    'Sauce', 'Sauce', 'Sauce', 'Sauce',
+    'Cheese', 'Cheese', 'Cheese', 'Cheese',
+    'Pepperoni', 'Pepperoni', 'Pepperoni', 'Pepperoni'
+];
+
 export function initSection2(containerEl) {
     const html = `
         <p class="section-description">
@@ -17,7 +24,7 @@ export function initSection2(containerEl) {
         <div style="text-align: center; margin: 2rem 0;">
             <div class="pizza-grid" id="patchGrid">
                 ${Array.from({ length: 16 }, (_, i) => `
-                    <div class="patch" data-index="${i}">P${i + 1}</div>
+                    <div class="patch" data-index="${i}">${patchLabels[i]}</div>
                 `).join('')}
             </div>
         </div>
@@ -130,7 +137,7 @@ async function animatePatchesS2(patchGrid, imageTokenRow, patchCounter) {
 function createTokenRow(patches, imageTokenRow, patchCounter) {
     imageTokenRow.innerHTML = patches.map((patch, idx) => `
         <span class="token image-token" data-index="${idx}">
-            Patch ${idx + 1}
+            ${patchLabels[idx]}
         </span>
     `).join('');
 

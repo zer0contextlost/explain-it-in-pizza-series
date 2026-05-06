@@ -11,7 +11,7 @@ const ATTENTION_SCORES = [
     [0.6, 0.4, 0.5, 0.7, 0.3, 0.87]
 ];
 
-const TOKENS = ['the', 'anchovy', 'loves', 'the', 'caper', 'salad'];
+const TOKENS = ['anchovy', 'basil', 'caper', 'olive', 'garlic', 'tomato'];
 
 function interpolateColor(value) {
     // cream (0.0) -> cheese (0.5) -> tomato (1.0)

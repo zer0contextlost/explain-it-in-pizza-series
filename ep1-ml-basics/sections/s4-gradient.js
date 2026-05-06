@@ -1,4 +1,7 @@
+let _containerEl = null;
+
 export function init(containerEl) {
+  _containerEl = containerEl;
   const html = `
     <div class="gradient-wrapper">
       <canvas id="gradientCanvas" class="gradient-canvas"></canvas>
@@ -25,13 +28,13 @@ export function init(containerEl) {
 
   containerEl.innerHTML = html;
 
-  const canvas = document.getElementById('gradientCanvas');
+  const canvas = containerEl.querySelector('#gradientCanvas');
   const ctx = canvas.getContext('2d');
-  const lrSlider = document.getElementById('lrSlider');
-  const rollBtn = document.getElementById('rollBtn');
-  const resetBtn = document.getElementById('resetBtn');
-  const stepCount = document.getElementById('stepCount');
-  const currentLoss = document.getElementById('currentLoss');
+  const lrSlider = containerEl.querySelector('#lrSlider');
+  const rollBtn = containerEl.querySelector('#rollBtn');
+  const resetBtn = containerEl.querySelector('#resetBtn');
+  const stepCount = containerEl.querySelector('#stepCount');
+  const currentLoss = containerEl.querySelector('#currentLoss');
 
   let isAnimating = false;
   let steps = 0;
@@ -45,7 +48,7 @@ export function init(containerEl) {
     resizeCanvas();
     drawLandscape();
   });
-  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('resize', () => { resizeCanvas(); drawLandscape(); });
 
   // Parabola loss function with small local bump
   function lossAt(x) {
@@ -118,14 +121,19 @@ export function init(containerEl) {
     ctx.fillStyle = 'rgba(230, 57, 70, 0.1)';
     ctx.fillRect(padding + (0.2 * graphWidth), padding, 0.2 * graphWidth, graphHeight);
 
-    // Labels
+    // Canvas title
     ctx.fillStyle = '#6B3A2A';
+    ctx.font = 'bold 13px Fredoka One';
+    ctx.textAlign = 'left';
+    ctx.fillText('Recipe Flavor Space', padding, 15);
+
+    // Labels
     ctx.font = 'bold 12px Fredoka One';
     ctx.textAlign = 'center';
-    ctx.fillText('Local Minimum Trap', padding + (0.3 * graphWidth), padding - 10);
+    ctx.fillText('Decent But Stuck 🤔', padding + (0.3 * graphWidth), padding - 10);
 
     ctx.fillStyle = '#2A9D8F';
-    ctx.fillText('Global Minimum! 🎉', padding + (0.7 * graphWidth), padding - 10);
+    ctx.fillText('Perfect Pizza Valley 🍕', padding + (0.7 * graphWidth), padding - 10);
 
     // Ball
     const ballPixelX = padding + ballX * graphWidth;
@@ -211,9 +219,8 @@ export function init(containerEl) {
 }
 
 export function reset() {
-  const rollBtn = document.getElementById('rollBtn');
-  const resetBtn = document.getElementById('resetBtn');
-
+  if (!_containerEl) return;
+  const resetBtn = _containerEl.querySelector('#resetBtn');
   if (resetBtn) {
     resetBtn.click();
   }

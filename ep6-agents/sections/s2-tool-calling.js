@@ -223,7 +223,7 @@ export function init(containerEl) {
         toolStates[tool.id] = true;
       });
 
-      document.querySelectorAll('.tool-button').forEach(btn => {
+      containerEl.querySelectorAll('.tool-button').forEach(btn => {
         btn.classList.remove('disabled');
       });
 

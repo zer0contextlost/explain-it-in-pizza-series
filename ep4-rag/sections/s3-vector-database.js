@@ -102,7 +102,7 @@ export function init(containerEl) {
     }
 
     // Show the spicy section glowing
-    document.querySelectorAll('.recipe-card').forEach((card) => {
+    containerEl.querySelectorAll('.recipe-card').forEach((card) => {
       if (card.textContent.includes('Spicy')) {
         card.style.boxShadow = '0 0 20px rgba(230, 57, 70, 0.8)';
       }

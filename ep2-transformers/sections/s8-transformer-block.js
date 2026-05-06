@@ -8,7 +8,7 @@ const BOX_WIDTH = 180;
 const BOX_HEIGHT = 50;
 const SPACING = 20;
 
-function drawTransformerBlock(canvas, ctx, blockIndex, N) {
+function drawTransformerBlock(canvas, ctx, blockIndex, N, activeSubBlock) {
     ctx.setLineDash([]);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -49,12 +49,24 @@ function drawTransformerBlock(canvas, ctx, blockIndex, N) {
         const x = startX + idx * (BOX_WIDTH + SPACING);
         const y = startY;
 
-        // Box
-        ctx.fillStyle = block.color;
-        ctx.fillRect(x, y, BOX_WIDTH, BOX_HEIGHT);
+        const isActive = activeSubBlock === idx;
 
-        ctx.strokeStyle = '#6B3A2A';
-        ctx.lineWidth = 2;
+        // Box
+        if (isActive) {
+            ctx.shadowColor = 'rgba(255, 220, 50, 0.9)';
+            ctx.shadowBlur = 18;
+            ctx.fillStyle = '#FFFDE7';
+        } else {
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = block.color;
+        }
+        ctx.fillRect(x, y, BOX_WIDTH, BOX_HEIGHT);
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+
+        ctx.strokeStyle = isActive ? '#F4A261' : '#6B3A2A';
+        ctx.lineWidth = isActive ? 3 : 2;
         ctx.strokeRect(x, y, BOX_WIDTH, BOX_HEIGHT);
 
         // Label
@@ -164,8 +176,8 @@ export function init(containerEl) {
                 border-radius: 8px;
                 border: 2px solid #6B3A2A;
             ">
-                <p style="font-size: 1.3rem; margin-bottom: 0.5rem;">🎉 You now understand the Transformer</p>
-                <p style="color: #264653;">The thing powering ChatGPT, Claude, and Gemini</p>
+                <p style="font-size: 1.3rem; margin-bottom: 0.5rem;">🍕 You just baked a Transformer!</p>
+                <p style="color: #264653;">Stack 96 of these in a row and you've got GPT-4.</p>
             </div>
         </div>
     `;
@@ -188,11 +200,11 @@ export function init(containerEl) {
         canvas.height = numBlocks * 150 + 60;
     }
 
-    function draw() {
+    function draw(activeSubBlock) {
         if (!canvasRef || !ctxRef) return;
         ctxRef.clearRect(0, 0, canvasRef.width, canvasRef.height);
         for (let i = 0; i < numBlocks; i++) {
-            drawTransformerBlock(canvasRef, ctxRef, i, numBlocks);
+            drawTransformerBlock(canvasRef, ctxRef, i, numBlocks, activeSubBlock);
         }
     }
 
@@ -217,15 +229,17 @@ export function init(containerEl) {
         if (isAnimating) return;
         isAnimating = true;
         runBtn.disabled = true;
+        message.style.display = 'none';
 
         try {
-            // Animation would show blocks lighting up in sequence
-            // For now, just wait a moment
-            await new Promise(r => setTimeout(r, 1000));
-
-            if (numBlocks === 6) {
-                message.style.display = 'block';
+            const subBlockCount = 4; // Self-Attention, Add & Norm, Feed-Forward, Add & Norm
+            for (let i = 0; i < subBlockCount; i++) {
+                draw(i);
+                await new Promise(r => setTimeout(r, 600));
             }
+            // Clear active highlight
+            draw(null);
+            message.style.display = 'block';
         } finally {
             runBtn.disabled = false;
             isAnimating = false;

@@ -1,4 +1,7 @@
+let _containerEl = null;
+
 export function init(containerEl) {
+  _containerEl = containerEl;
   const html = `
     <div class="overfitting-wrapper">
       <div class="chef-column">
@@ -42,13 +45,13 @@ export function init(containerEl) {
 
   containerEl.innerHTML = html;
 
-  const switchBtns = document.querySelectorAll('.switch-btn');
-  const overfitChef = document.getElementById('overfitChef');
-  const trainedChef = document.getElementById('trainedChef');
-  const overfitTrain = document.getElementById('overfitTrain');
-  const overfitTest = document.getElementById('overfitTest');
-  const trainedTrain = document.getElementById('trainedTrain');
-  const trainedTest = document.getElementById('trainedTest');
+  const switchBtns = containerEl.querySelectorAll('.switch-btn');
+  const overfitChef = containerEl.querySelector('#overfitChef');
+  const trainedChef = containerEl.querySelector('#trainedChef');
+  const overfitTrain = containerEl.querySelector('#overfitTrain');
+  const overfitTest = containerEl.querySelector('#overfitTest');
+  const trainedTrain = containerEl.querySelector('#trainedTrain');
+  const trainedTest = containerEl.querySelector('#trainedTest');
 
   let mode = 'train';
 
@@ -92,7 +95,8 @@ export function init(containerEl) {
 }
 
 export function reset() {
-  const trainBtn = document.querySelector('[data-mode="train"]');
+  if (!_containerEl) return;
+  const trainBtn = _containerEl.querySelector('[data-mode="train"]');
   if (trainBtn) {
     trainBtn.click();
   }

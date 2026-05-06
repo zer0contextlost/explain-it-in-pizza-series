@@ -22,7 +22,8 @@ class TemperatureSection {
         this.container.innerHTML = `
             <div class="temp-wrapper">
                 <div style="margin: 1rem 0;">
-                    <label class="label">Oven Temperature (Creativity Dial):</label>
+                    <label class="label">Chef's Creativity Dial:</label>
+                    <p class="small-text" style="margin: 0 0 0.5rem; font-style: italic; color: var(--text-muted);">Not the actual oven — the chef's willingness to improvise.</p>
                     <div style="display: flex; align-items: center; gap: 1rem; margin: 1rem 0;">
                         <span style="font-weight: bold; min-width: 40px;">0.0</span>
                         <input type="range" id="temp-slider" min="0" max="200" value="100" step="10" style="flex: 1;">
@@ -90,14 +91,14 @@ class TemperatureSection {
             el.style.opacity = '0.5';
         });
 
-        setTimeout(() => {
+        this.timers.push(setTimeout(() => {
             pizzaEls.forEach((el, idx) => {
                 const pizza = this.generatePizzaForTemp();
                 this.currentPizzas.push(pizza);
                 el.textContent = pizza;
                 el.style.opacity = '1';
             });
-        }, 200);
+        }, 200));
     }
 
     generatePizzaForTemp() {

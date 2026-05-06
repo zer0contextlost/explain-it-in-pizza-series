@@ -1,4 +1,9 @@
+let _containerEl = null;
+let trainingTimeoutId = null;
+let _isTraining = false;
+
 export function init(containerEl) {
+  _containerEl = containerEl;
   const html = `
     <div class="epochs-wrapper">
       <div class="epochs-left">
@@ -40,11 +45,11 @@ export function init(containerEl) {
 
       <div class="epochs-right">
         <div class="pizza-progress">
-          <div class="pizza-stage" id="stage1" title="Charcoal">🪨</div>
-          <div class="pizza-stage" id="stage2" title="Bad">🔶</div>
-          <div class="pizza-stage" id="stage3" title="OK">🍊</div>
-          <div class="pizza-stage" id="stage4" title="Good">🍕</div>
-          <div class="pizza-stage" id="stage5" title="Perfect">🏆</div>
+          <div class="pizza-stage" id="stage1" title="Raw Dough">🟫</div>
+          <div class="pizza-stage" id="stage2" title="Burnt Attempt">🔶</div>
+          <div class="pizza-stage" id="stage3" title="Getting There">🍞</div>
+          <div class="pizza-stage" id="stage4" title="Perfect Pizza">🍕</div>
+          <div class="pizza-stage" id="stage5" title="Chef's Kiss">🏆</div>
         </div>
 
         <div class="loss-graph">
@@ -57,19 +62,19 @@ export function init(containerEl) {
 
   containerEl.innerHTML = html;
 
-  const epochNumber = document.getElementById('epochNumber');
-  const epochSpeed = document.getElementById('epochSpeed');
-  const runBtn = document.getElementById('runTraining');
-  const circle = document.getElementById('progressCircle');
-  const chefAnimation = document.getElementById('chefAnimation');
-  const lossCanvas = document.getElementById('lossCanvas');
+  const epochNumber = containerEl.querySelector('#epochNumber');
+  const epochSpeed = containerEl.querySelector('#epochSpeed');
+  const runBtn = containerEl.querySelector('#runTraining');
+  const circle = containerEl.querySelector('#progressCircle');
+  const chefAnimation = containerEl.querySelector('#chefAnimation');
+  const lossCanvas = containerEl.querySelector('#lossCanvas');
   const lossCtx = lossCanvas.getContext('2d');
   const stages = [
-    document.getElementById('stage1'),
-    document.getElementById('stage2'),
-    document.getElementById('stage3'),
-    document.getElementById('stage4'),
-    document.getElementById('stage5'),
+    containerEl.querySelector('#stage1'),
+    containerEl.querySelector('#stage2'),
+    containerEl.querySelector('#stage3'),
+    containerEl.querySelector('#stage4'),
+    containerEl.querySelector('#stage5'),
   ];
 
   const circleRadius = 54;
@@ -79,7 +84,6 @@ export function init(containerEl) {
 
   let currentEpoch = 0;
   const maxEpochs = 20;
-  let isTraining = false;
   const trainingLoss = [];
   const validationLoss = [];
 
@@ -90,7 +94,7 @@ export function init(containerEl) {
   requestAnimationFrame(() => {
     resizeCanvas();
   });
-  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('resize', () => { resizeCanvas(); drawLossGraph(); });
 
   function simulateLoss(epoch) {
     // Training loss decreases smoothly
@@ -185,7 +189,7 @@ export function init(containerEl) {
   }
 
   async function trainOneEpoch() {
-    if (!isTraining) return;
+    if (!_isTraining) return;
 
     const { trainLoss, validLoss } = simulateLoss(currentEpoch);
     trainingLoss.push(trainLoss);
@@ -199,16 +203,16 @@ export function init(containerEl) {
     const delay = Math.round(2000 / speed);
 
     if (currentEpoch < maxEpochs) {
-      setTimeout(trainOneEpoch, delay);
+      trainingTimeoutId = setTimeout(trainOneEpoch, delay);
     } else {
-      isTraining = false;
+      _isTraining = false;
       runBtn.disabled = false;
       window.soundManager?.success();
     }
   }
 
   runBtn.addEventListener('click', () => {
-    if (isTraining) return;
+    if (_isTraining) return;
 
     if (currentEpoch >= maxEpochs) {
       currentEpoch = 0;
@@ -219,7 +223,7 @@ export function init(containerEl) {
       epochNumber.textContent = '0';
     }
 
-    isTraining = true;
+    _isTraining = true;
     runBtn.disabled = true;
     trainOneEpoch();
   });
@@ -228,15 +232,21 @@ export function init(containerEl) {
 }
 
 export function reset() {
-  const epochNumber = document.getElementById('epochNumber');
-  const runBtn = document.getElementById('runTraining');
-  const circle = document.getElementById('progressCircle');
-  const lossCanvas = document.getElementById('lossCanvas');
+  clearTimeout(trainingTimeoutId);
+  trainingTimeoutId = null;
+  _isTraining = false;
+
+  if (!_containerEl) return;
+
+  const epochNumber = _containerEl.querySelector('#epochNumber');
+  const runBtn = _containerEl.querySelector('#runTraining');
+  const circle = _containerEl.querySelector('#progressCircle');
+  const lossCanvas = _containerEl.querySelector('#lossCanvas');
 
   if (epochNumber) epochNumber.textContent = '0';
   if (runBtn) runBtn.disabled = false;
 
-  const stages = document.querySelectorAll('.pizza-stage');
+  const stages = _containerEl.querySelectorAll('.pizza-stage');
   stages.forEach((s) => s.classList.remove('active'));
   if (stages[0]) stages[0].classList.add('active');
 

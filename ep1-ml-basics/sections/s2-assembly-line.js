@@ -1,4 +1,7 @@
+let _containerEl = null;
+
 export function init(containerEl) {
+  _containerEl = containerEl;
   const html = `
     <div class="assembly-wrapper">
       <div class="assembly-controls">
@@ -60,12 +63,12 @@ export function init(containerEl) {
   let isAnimating = false;
   let animationSpeed = 1;
 
-  const sendBtn = document.getElementById('sendOrder');
-  const speedSlider = document.getElementById('speedSlider');
-  const canvas = document.getElementById('assemblyCanvas');
+  const sendBtn = containerEl.querySelector('#sendOrder');
+  const speedSlider = containerEl.querySelector('#speedSlider');
+  const canvas = containerEl.querySelector('#assemblyCanvas');
   const ctx = canvas.getContext('2d');
-  const visualization = document.querySelector('.assembly-visualization');
-  const output = document.querySelector('.pizza-output');
+  const visualization = containerEl.querySelector('.assembly-visualization');
+  const output = containerEl.querySelector('.pizza-output');
 
   // Set canvas size
   function resizeCanvas() {
@@ -76,12 +79,12 @@ export function init(containerEl) {
     resizeCanvas();
     drawConnections();
   });
-  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('resize', () => { resizeCanvas(); drawConnections(); });
 
   // Get node positions
   function getNodePositions() {
     const layers = [];
-    document.querySelectorAll('[data-layer]').forEach((layer) => {
+    containerEl.querySelectorAll('[data-layer]').forEach((layer) => {
       const nodes = [];
       layer.querySelectorAll('.node').forEach((node) => {
         const rect = node.getBoundingClientRect();
@@ -128,49 +131,50 @@ export function init(containerEl) {
     isAnimating = true;
     sendBtn.disabled = true;
 
-    window.soundManager?.ping();
+    try {
+      window.soundManager?.ping();
 
-    const positions = getNodePositions();
-    const durationMs = 2000 / animationSpeed;
-    const stepDuration = durationMs / (positions.length - 1);
+      const positions = getNodePositions();
+      const durationMs = 2000 / animationSpeed;
+      const stepDuration = durationMs / (positions.length - 1);
 
-    // Animate through layers
-    for (let layerIdx = 0; layerIdx < positions.length; layerIdx++) {
-      const layer = positions[layerIdx];
-      const nodes = document.querySelectorAll(`[data-layer="${layerIdx}"] .node`);
+      // Animate through layers
+      for (let layerIdx = 0; layerIdx < positions.length; layerIdx++) {
+        const nodes = containerEl.querySelectorAll(`[data-layer="${layerIdx}"] .node`);
 
-      // Activate nodes in this layer
-      nodes.forEach((node, idx) => {
-        const activateAt = (layerIdx * stepDuration) + (idx * 80);
-        const deactivateAt = activateAt + stepDuration * 0.8;
-        setTimeout(() => {
-          node.classList.add('active');
-          window.soundManager?.plop();
-        }, activateAt);
+        // Activate nodes in this layer
+        nodes.forEach((node, idx) => {
+          const activateAt = (layerIdx * stepDuration) + (idx * 80);
+          const deactivateAt = activateAt + stepDuration * 0.8;
+          setTimeout(() => {
+            node.classList.add('active');
+            window.soundManager?.plop();
+          }, activateAt);
 
-        setTimeout(() => {
-          node.classList.remove('active');
-        }, deactivateAt);
-      });
-    }
+          setTimeout(() => {
+            node.classList.remove('active');
+          }, deactivateAt);
+        });
+      }
 
-    // Animate output pizza
-    setTimeout(() => {
-      output.style.animation = 'none';
+      // Animate output pizza
       setTimeout(() => {
-        output.style.animation = 'pulse 0.6s ease-in-out';
-        window.soundManager?.success();
-      }, 10);
-    }, durationMs - 200);
+        output.style.animation = 'none';
+        setTimeout(() => {
+          output.style.animation = 'pulse 0.6s ease-in-out';
+          window.soundManager?.success();
+        }, 10);
+      }, durationMs - 200);
 
-    setTimeout(() => {
+      await new Promise((resolve) => setTimeout(resolve, durationMs));
+    } finally {
       isAnimating = false;
       sendBtn.disabled = false;
-    }, durationMs);
+    }
   });
 
   // Hover effects
-  document.querySelectorAll('.node').forEach((node) => {
+  containerEl.querySelectorAll('.node').forEach((node) => {
     node.addEventListener('mouseenter', () => {
       const layer = node.parentElement;
       const layerIdx = parseInt(layer.dataset.layer);
@@ -226,17 +230,19 @@ export function init(containerEl) {
 }
 
 export function reset() {
-  const sendBtn = document.getElementById('sendOrder');
+  if (!_containerEl) return;
+
+  const sendBtn = _containerEl.querySelector('#sendOrder');
   if (sendBtn) {
     sendBtn.disabled = false;
   }
 
-  const nodes = document.querySelectorAll('.node');
+  const nodes = _containerEl.querySelectorAll('.node');
   nodes.forEach((node) => {
     node.classList.remove('active');
   });
 
-  const output = document.querySelector('.pizza-output');
+  const output = _containerEl.querySelector('.pizza-output');
   if (output) {
     output.style.animation = 'none';
   }

@@ -95,12 +95,10 @@ class ZeroShotSection {
         const generateBtn = this.container.querySelector('#zs-generate-btn');
         generateBtn.disabled = true;
 
-        try {
-            this.animateGeneration();
-        } finally {
+        this.animateGeneration(() => {
             generateBtn.disabled = false;
             this.isAnimating = false;
-        }
+        });
     }
 
     generateAgain() {
@@ -110,15 +108,13 @@ class ZeroShotSection {
         const tryAgainBtn = this.container.querySelector('#zs-try-again-btn');
         tryAgainBtn.disabled = true;
 
-        try {
-            this.animateGeneration();
-        } finally {
+        this.animateGeneration(() => {
             tryAgainBtn.disabled = false;
             this.isAnimating = false;
-        }
+        });
     }
 
-    animateGeneration() {
+    animateGeneration(onComplete) {
         const pizzaEl = this.container.querySelector('#zs-pizza');
         const qualityFill = this.container.querySelector('#zs-quality-fill');
 
@@ -138,9 +134,11 @@ class ZeroShotSection {
             qualityFill.style.width = quality + '%';
             qualityFill.parentElement.classList.add('quality-wobble');
 
-            setTimeout(() => {
+            const wobbleId = setTimeout(() => {
                 qualityFill.parentElement.classList.remove('quality-wobble');
+                if (onComplete) onComplete();
             }, 300);
+            this.timers.push(wobbleId);
         }, 800);
 
         this.timers.push(timeoutId);

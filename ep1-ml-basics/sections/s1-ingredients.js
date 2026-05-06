@@ -1,7 +1,9 @@
 let count = 0;
 const achievedMilestones = new Set();
+let _containerEl = null;
 
 export function init(containerEl) {
+  _containerEl = containerEl;
   const html = `
     <div class="ingredients-wrapper">
       <div class="ingredients-grid" id="ingredientsGrid"></div>
@@ -49,10 +51,10 @@ export function init(containerEl) {
 
   const milestones = [100, 300, 500];
 
-  const gridEl = document.getElementById('ingredientsGrid');
-  const counterEl = document.getElementById('counter');
-  const milestonesEl = document.getElementById('milestones');
-  const bowlFill = document.getElementById('bowlFill');
+  const gridEl = containerEl.querySelector('#ingredientsGrid');
+  const counterEl = containerEl.querySelector('#counter');
+  const milestonesEl = containerEl.querySelector('#milestones');
+  const bowlFill = containerEl.querySelector('#bowlFill');
 
   function dropIngredient(ing) {
     if (ing.type === 'bad') {
@@ -110,7 +112,7 @@ export function init(containerEl) {
   });
 
   // Bowl drop zone
-  const bowl = document.querySelector('.bowl-container');
+  const bowl = containerEl.querySelector('.bowl-container');
   bowl.addEventListener('dragover', (e) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
@@ -167,7 +169,9 @@ export function reset() {
   count = 0;
   achievedMilestones.clear();
 
-  const grid = document.getElementById('ingredientsGrid');
+  if (!_containerEl) return;
+
+  const grid = _containerEl.querySelector('#ingredientsGrid');
   if (grid) {
     const tiles = grid.querySelectorAll('.ingredient-tile');
     tiles.forEach((tile) => {
@@ -175,17 +179,17 @@ export function reset() {
     });
   }
 
-  const counter = document.getElementById('counter');
+  const counter = _containerEl.querySelector('#counter');
   if (counter) {
     counter.textContent = 'Training Examples: 0 / 500';
   }
 
-  const bowlFill = document.getElementById('bowlFill');
+  const bowlFill = _containerEl.querySelector('#bowlFill');
   if (bowlFill) {
     bowlFill.style.height = '0%';
   }
 
-  const milestones = document.getElementById('milestones');
+  const milestones = _containerEl.querySelector('#milestones');
   if (milestones) {
     milestones.innerHTML = '';
   }

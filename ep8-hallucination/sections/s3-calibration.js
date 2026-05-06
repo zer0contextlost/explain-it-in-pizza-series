@@ -53,20 +53,19 @@ window.initSection3Internal = function(container, sectionNum) {
 
     // Generate responses
     questions.forEach((q, idx) => {
-      // Calibrated chef
-      const confidenceCalibrated = 50 + Math.random() * 50; // 50-100%
-      const accuracyCalibrated = Math.random() > 0.3 ? 1 : 0.5;
-      const finalConfidenceCalibrated = confidenceCalibrated * accuracyCalibrated;
-
+      // Calibrated chef: confidence correlates with accuracy (confidence ± 10% noise)
+      const confidenceCalibrated = 40 + Math.random() * 55; // 40-95%
+      const rawAccuracy = confidenceCalibrated / 100 + (Math.random() * 0.2 - 0.1);
+      const clampedAccuracy = Math.max(0, Math.min(1, rawAccuracy));
       quizData.calibrated.push({
-        confidence: finalConfidenceCalibrated,
-        correct: accuracyCalibrated > 0.7
+        confidence: confidenceCalibrated,
+        correct: clampedAccuracy > 0.5
       });
 
-      // Overconfident chef - always high confidence, lower actual accuracy
+      // Overconfident chef - always high confidence (0.8-1.0), but random accuracy
       const accuracyOverconfident = Math.random() > 0.4 ? 1 : 0.3;
       quizData.overconfident.push({
-        confidence: 90 + Math.random() * 10, // Always 90-100%
+        confidence: 80 + Math.random() * 20, // Always 80-100%
         correct: accuracyOverconfident > 0.6
       });
     });
@@ -74,8 +73,10 @@ window.initSection3Internal = function(container, sectionNum) {
     // Animate results
     setTimeout(() => {
       resultsDiv.style.display = 'grid';
-      drawCalibrationCharts();
-      calculateScores();
+      requestAnimationFrame(() => {
+        drawCalibrationCharts();
+        calculateScores();
+      });
       runBtn.disabled = false;
       runBtn.textContent = 'Run Quiz Again';
     }, 800);

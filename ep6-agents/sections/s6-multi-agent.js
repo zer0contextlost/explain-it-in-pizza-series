@@ -11,7 +11,7 @@ const stations = [
   { id: 'dough', emoji: '🤲', role: 'Dough Master', task: 'Stretch dough' },
   { id: 'topping', emoji: '🎨', role: 'Topping Specialist', task: 'Add toppings' },
   { id: 'oven', emoji: '🔥', role: 'Oven Tender', task: 'Bake pizza' },
-  { id: 'expedite', emoji: '✓', role: 'Expediter', task: 'Quality check' }
+  { id: 'expedite', emoji: '✅', role: 'Expediter', task: 'Quality check' }
 ];
 
 function resizeCanvas(canvas) {

@@ -129,6 +129,9 @@ export function init(containerEl) {
             <details style="margin-top: 2rem;">
                 <summary>Why This Matters</summary>
                 <p>
+                    The calibration scale ensures no single flavour dominates the others. Once balanced, the chef can fine-tune — a pinch of salt here, a touch of sweetness there.
+                </p>
+                <p>
                     Layer normalization rescales activations to have zero mean and unit variance.
                     This stabilizes training: gradients don't vanish or explode, and learning is consistent
                     across different parts of the network. Gamma and beta are learned parameters that let
@@ -224,4 +227,6 @@ export function reset() {
         rafId = null;
     }
     isAnimating = false;
+    currentGamma = 1.0;
+    currentBeta = 0.0;
 }

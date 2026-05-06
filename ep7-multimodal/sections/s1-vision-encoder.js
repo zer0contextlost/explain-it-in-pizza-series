@@ -246,8 +246,12 @@ function showEmbeddingBars(containerEl) {
     const resultsDiv = containerEl.querySelector('#resultsS1');
     const barsDiv = containerEl.querySelector('#embeddingBars');
 
+    const dimensionNames = [
+        'Sauce Intensity', 'Crust Crunch', 'Grease Level', 'Spice Heat',
+        'Cheese Pull', 'Sweetness', 'Herby-ness', 'Smoke'
+    ];
     const dimensions = Array.from({ length: 8 }, (_, i) => ({
-        name: `Dim ${i + 1}`,
+        name: dimensionNames[i],
         value: Math.random() * 100
     }));
 

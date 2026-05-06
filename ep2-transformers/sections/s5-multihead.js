@@ -31,7 +31,7 @@ const HEADS_INFO = [
     { key: 'balance', emoji: '🌿', name: 'Balance Head', color: '#6B3A2A' }
 ];
 
-const TOKENS_4 = ['pasta', 'sauce', 'herbs', 'oil'];
+const TOKENS_4 = ['crust', 'sauce', 'herbs', 'oil'];
 
 function interpolateColor(value) {
     const cream = [255, 248, 240];

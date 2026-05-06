@@ -39,7 +39,7 @@ export function init(containerEl) {
         <button class="button secondary" id="prevCitationBtn">← Previous</button>
         <span id="citationCounter">1 / ${citations.length}</span>
         <button class="button secondary" id="nextCitationBtn">Next →</button>
-        <button class="button" id="verifyAllBtn">Verify All Sources 🏴</button>
+        <button class="button" id="verifyAllBtn">Verify All Sources 🚩</button>
       </div>
       <div class="citation-display grid-2">
         <div class="answer-section">
@@ -74,7 +74,7 @@ export function init(containerEl) {
     answerText.innerHTML = '';
     sourcesList.innerHTML = '';
     allFlagsVisible = false;
-    verifyAllBtn.textContent = 'Verify All Sources 🏴';
+    verifyAllBtn.textContent = 'Verify All Sources 🚩';
 
     // Build clickable answer
     let answerHTML = citation.answer;
@@ -138,7 +138,7 @@ export function init(containerEl) {
   function verifyAll() {
     if (!allFlagsVisible) {
       allFlagsVisible = true;
-      verifyAllBtn.textContent = 'Hide All Sources 🏴';
+      verifyAllBtn.textContent = 'Hide All Sources 🚩';
       answerText.querySelectorAll('.citation-flag').forEach((flag, idx) => {
         flag.style.boxShadow = '0 0 15px rgba(230, 57, 70, 0.8)';
         flag.style.animation = `pulse 0.6s ease ${idx * 0.1}s`;
@@ -150,7 +150,7 @@ export function init(containerEl) {
       window.soundManager?.success();
     } else {
       allFlagsVisible = false;
-      verifyAllBtn.textContent = 'Verify All Sources 🏴';
+      verifyAllBtn.textContent = 'Verify All Sources 🚩';
       answerText.querySelectorAll('.citation-flag').forEach((flag) => {
         flag.style.boxShadow = '';
         flag.style.animation = '';

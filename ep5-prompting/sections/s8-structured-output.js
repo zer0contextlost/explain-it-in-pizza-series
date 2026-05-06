@@ -124,11 +124,11 @@ class StructuredOutputSection {
                     ">
                         <p><strong>JSON is machine-readable:</strong></p>
                         <ul style="margin-left: 1.5rem;">
-                            <li>A robot waiter can parse JSON: extract the crust, toppings, size</li>
-                            <li>A poem cannot be parsed without human interpretation</li>
-                            <li>Your app can validate: "Is crust valid? Is size reasonable?"</li>
-                            <li>Your database can store structured fields reliably</li>
-                            <li>Your API can combine data with other services</li>
+                            <li>The ticket system reads structured order slips — not poems</li>
+                            <li>The kitchen display only accepts formatted orders</li>
+                            <li>The supplier's ordering system expects a specific form</li>
+                            <li>The expediter can validate: "Is crust valid? Is size reasonable?"</li>
+                            <li>A poem describing pizza cannot be read by any kitchen system</li>
                         </ul>
                     </div>
                 </div>

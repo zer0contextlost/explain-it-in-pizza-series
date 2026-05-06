@@ -90,7 +90,12 @@ class Section2 {
   showMilestone(pairs) {
     const msg = document.createElement('div');
     msg.className = 'milestone-msg';
-    msg.textContent = `🎉 ${pairs.toLocaleString()} training pairs completed!`;
+    const milestoneTexts = {
+      1000: "🎉 1,000 orders matched — Chef Tony is getting the hang of it!",
+      5000: "🍕 5,000 orders down — the kitchen is finding its rhythm!",
+      10000: "👨‍🍳 10,000 orders — this chef knows YOUR pizza now!"
+    };
+    msg.textContent = milestoneTexts[pairs] || `🎉 ${pairs.toLocaleString()} training pairs completed!`;
     this.milestoneMessages.appendChild(msg);
 
     setTimeout(() => {

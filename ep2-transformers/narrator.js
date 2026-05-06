@@ -11,7 +11,7 @@ const NARRATIONS = {
 
 export class Narrator {
     constructor() {
-        this.enabled = localStorage.getItem('narrator-enabled') !== 'false';
+        this.enabled = localStorage.getItem('narrator-enabled') === 'true';
         this.utterance = null;
     }
 

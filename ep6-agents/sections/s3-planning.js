@@ -1,6 +1,5 @@
 // Section 3: Planning
 let isAnimating = false;
-let planningEnabled = true;
 let timeoutIds = [];
 
 const orders = [
@@ -61,10 +60,6 @@ export function init(containerEl) {
   const html = `
     <div class="planning-wrapper">
       <div class="planning-controls">
-        <label class="toggle-switch">
-          <input type="checkbox" id="planningToggle" checked>
-          <span>Planning Mode</span>
-        </label>
         <select id="orderSelect" style="padding: 0.75rem; border: 2px solid #F4A261; border-radius: 5px; font-family: 'Nunito', sans-serif; cursor: pointer;">
           ${orders.map((o, i) => `<option value="${i}">${o.name}</option>`).join('')}
         </select>
@@ -95,7 +90,6 @@ export function init(containerEl) {
 
   containerEl.innerHTML = html;
 
-  const planningToggle = containerEl.querySelector('#planningToggle');
   const orderSelect = containerEl.querySelector('#orderSelect');
   const executeBtn = containerEl.querySelector('#executeBtn');
   const resetBtn = containerEl.querySelector('#resetBtn');
@@ -127,10 +121,6 @@ export function init(containerEl) {
 
     resultsDiv.style.display = 'none';
   }
-
-  planningToggle.addEventListener('change', () => {
-    planningEnabled = planningToggle.checked;
-  });
 
   orderSelect.addEventListener('change', () => {
     renderOrder(parseInt(orderSelect.value));
@@ -280,7 +270,6 @@ export function init(containerEl) {
 
 export function reset() {
   isAnimating = false;
-  planningEnabled = true;
   timeoutIds.forEach(id => clearTimeout(id));
   timeoutIds = [];
 }

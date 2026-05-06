@@ -14,6 +14,7 @@ window.initSection1Internal = function(container, sectionNum) {
 
     <div class="completion-result" id="s1-result"></div>
 
+    <div id="s1-validation-msg" style="display: none; color: var(--color-danger, #C0392B); font-weight: bold; text-align: center; margin-bottom: 0.5rem;"></div>
     <button id="s1-reveal" class="btn-secondary" style="width: 100%;">Reveal the Truth</button>
     <button id="s1-next" class="btn-secondary" style="width: 100%; display: none;">Next Example</button>
   `;
@@ -85,7 +86,10 @@ window.initSection1Internal = function(container, sectionNum) {
 
   document.getElementById('s1-reveal').onclick = function() {
     if (!selectedOption) {
-      alert('Please select an answer first.');
+      const validationMsg = document.getElementById('s1-validation-msg');
+      validationMsg.textContent = 'Pick an answer first, Chef!';
+      validationMsg.style.display = 'block';
+      setTimeout(() => { validationMsg.style.display = 'none'; }, 2000);
       return;
     }
 

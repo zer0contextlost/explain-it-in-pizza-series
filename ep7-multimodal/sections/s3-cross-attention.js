@@ -85,7 +85,7 @@ export function initSection3(containerEl) {
     });
 
     resetBtn.addEventListener('click', () => {
-        cancelAnimationFrame(animationIdS3);
+        clearTimeout(animationIdS3);
         isAnimatingS3 = false;
         generateBtn.disabled = false;
         currentWordIdx = 0;

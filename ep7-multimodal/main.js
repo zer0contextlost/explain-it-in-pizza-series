@@ -42,14 +42,3 @@ window.addEventListener('load', () => {
     });
 });
 
-window.addEventListener('resize', () => {
-    requestAnimationFrame(() => {
-        document.querySelectorAll('canvas').forEach(canvas => {
-            const wrapper = canvas.parentElement;
-            if (wrapper && wrapper.clientWidth) {
-                canvas.width = wrapper.clientWidth;
-                canvas.height = wrapper.clientHeight || 300;
-            }
-        });
-    });
-});

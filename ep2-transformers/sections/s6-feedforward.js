@@ -120,9 +120,9 @@ function drawNeuralNetwork(canvas, ctx, activations, withReLU) {
     ctx.fillStyle = '#6B3A2A';
     ctx.font = 'bold 12px Nunito';
     ctx.textAlign = 'center';
-    ctx.fillText('Input', padding, padding / 2);
-    ctx.fillText('Expansion (ReLU)', padding + layerSpacing / 2, padding / 2);
-    ctx.fillText('Output', padding + layerSpacing, padding / 2);
+    ctx.fillText('Ingredients In', padding, padding / 2);
+    ctx.fillText('High-Heat Expansion (ReLU)', padding + layerSpacing / 2, padding / 2);
+    ctx.fillText('Flavour Out', padding + layerSpacing, padding / 2);
 }
 
 export function init(containerEl) {

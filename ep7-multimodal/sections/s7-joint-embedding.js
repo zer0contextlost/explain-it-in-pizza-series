@@ -30,7 +30,7 @@ const embeddingDots = [
     // Sauce cluster
     { x: 450, y: 250, label: 'sauce (text)', modality: 'text', color: '#F39C12', emoji: '📝' },
     { x: 460, y: 260, label: 'sauce photo (image)', modality: 'image', color: '#4A90D9', emoji: '🖼️' },
-    { x: 445, y: 255, label: 'sauce taste (audio)', modality: 'audio', color: '#9B59B6', emoji: '🎵' },
+    { x: 445, y: 255, label: 'sauce sizzle (audio)', modality: 'audio', color: '#9B59B6', emoji: '🎵' },
     { x: 465, y: 245, label: 'sauce spreading (video)', modality: 'video', color: '#E74C3C', emoji: '🎬' }
 ];
 
@@ -121,7 +121,7 @@ export function initSection7(containerEl) {
         try {
             await animateFindNeighborsS7();
         } finally {
-            findNeighborsBtn.disabled = true;
+            findNeighborsBtn.disabled = false;
             isAnimatingS7 = false;
         }
     });

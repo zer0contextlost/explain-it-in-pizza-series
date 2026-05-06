@@ -105,9 +105,9 @@ class Section8 {
 
     // Draw three concentric circles
     const rings = [
-      { radius: 120, color: '#d63031', label: 'What you said', alpha: 0.2 },
-      { radius: 80, color: '#fdcb6e', label: 'What you meant', alpha: 0.3 },
-      { radius: 40, color: '#6bcf7f', label: 'What\'s good for you', alpha: 0.4 }
+      { radius: 120, color: '#d63031', label: 'The Order', alpha: 0.2 },
+      { radius: 80, color: '#fdcb6e', label: 'The Intent', alpha: 0.3 },
+      { radius: 40, color: '#6bcf7f', label: 'What Nonna Would Approve', alpha: 0.4 }
     ];
 
     rings.forEach(ring => {
@@ -185,8 +185,8 @@ class Section8 {
 
     // Detect which ring user clicked (approximate)
     const rect = this.canvas.getBoundingClientRect();
-    const clickX = (e.clientX - rect.left) / window.devicePixelRatio;
-    const clickY = (e.clientY - rect.top) / window.devicePixelRatio;
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
 
     const centerX = this.canvas.width / window.devicePixelRatio / 2;
     const centerY = this.canvas.height / window.devicePixelRatio / 2 - 20;

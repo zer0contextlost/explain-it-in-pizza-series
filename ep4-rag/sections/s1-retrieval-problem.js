@@ -1,10 +1,11 @@
 let orderIndex = 0;
+let _showOrder = null;
 
 const pizzaOrders = [
   { name: "Nonna's Sicilian 1987 Special", description: "A 36-year-old family recipe from Sicily" },
   { name: "Tokyo Fusion Okonomiyaki-Pesto", description: "Modern Japanese-Italian crossover from 2024" },
   { name: "Peru's Lost Ceviche Pie", description: "Experimental dish combining ceviche and pizza, 2025" },
-  { name: "ChatGPT Special (Post-2024)", description: "Whatever the model thinks is trendy now" },
+  { name: "The 2025 Trend Special", description: "Whatever's fashionable right now — no recipe exists yet." },
 ];
 
 export function init(containerEl) {
@@ -104,9 +105,11 @@ export function init(containerEl) {
     window.soundManager?.plop();
   });
 
+  _showOrder = showOrder;
   showOrder(orderIndex);
 }
 
 export function reset() {
   orderIndex = 0;
+  if (_showOrder) _showOrder(orderIndex);
 }

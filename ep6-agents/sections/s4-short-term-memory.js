@@ -10,12 +10,12 @@ const sampleCustomerFacts = [
   'Allergic to mushrooms',
   'Loves extra cheese',
   'Wants it delivered by 6 PM',
-  'Phone number: 555-0123',
-  'Address: 123 Main St',
-  'Has a dog named Max',
-  'Previous order: Large pepperoni',
-  'Birthday: March 15',
-  'Works as a software engineer',
+  'Likes extra sauce',
+  'Always orders the Margherita',
+  'Pre-ordered for a birthday party',
+  'Allergic to olives',
+  'Wants garlic knots with every order',
+  'Last visit: complained the crust was soggy',
   'Wants gluten-free crust'
 ];
 

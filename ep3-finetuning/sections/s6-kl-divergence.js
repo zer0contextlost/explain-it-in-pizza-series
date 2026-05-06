@@ -46,6 +46,13 @@ class Section6 {
     });
 
     this.trainBtn.addEventListener('click', () => this.trainStep());
+
+    // Reset apprentice button
+    const resetBtn = document.createElement('button');
+    resetBtn.textContent = 'Reset Apprentice';
+    resetBtn.style.marginLeft = '8px';
+    resetBtn.addEventListener('click', () => this.resetApprentice());
+    this.trainBtn.parentNode.insertBefore(resetBtn, this.trainBtn.nextSibling);
   }
 
   resizeCanvas() {
@@ -157,30 +164,48 @@ class Section6 {
     let progress = 0;
     const duration = 1000;
     const startTime = Date.now();
+    const canvas = this.canvas;
 
     const animate = () => {
-      const elapsed = Date.now() - startTime;
-      progress = Math.min(elapsed / duration, 1);
+      try {
+        const elapsed = Date.now() - startTime;
+        progress = Math.min(elapsed / duration, 1);
 
-      // Move apprentice toward target (but pulled back by KL)
-      const moveX = moveDistance * Math.cos(moveAngle) * progress;
-      const moveY = moveDistance * Math.sin(moveAngle) * progress;
+        // Move apprentice toward target (but pulled back by KL)
+        const moveX = moveDistance * Math.cos(moveAngle) * progress;
+        const moveY = moveDistance * Math.sin(moveAngle) * progress;
 
-      this.apprenticeX += moveX / 20;
-      this.apprenticeY += moveY / 20;
+        const newX = this.apprenticeX + moveX / 20;
+        const newY = this.apprenticeY + moveY / 20;
 
-      this.draw();
+        // Clamp apprentice to stay within canvas bounds
+        this.apprenticeX = Math.max(20, Math.min(canvas.width / window.devicePixelRatio - 20, newX));
+        this.apprenticeY = Math.max(20, Math.min(canvas.height / window.devicePixelRatio - 20, newY));
 
-      if (progress < 1) {
-        this.animationId = requestAnimationFrame(animate);
-      } else {
-        this.showResult(klPenalty);
-        this.trainBtn.disabled = false;
-        this.isAnimating = false;
+        this.draw();
+
+        if (progress < 1) {
+          this.animationId = requestAnimationFrame(animate);
+        } else {
+          this.showResult(klPenalty);
+        }
+      } catch (err) {
+        console.error('trainStep animation error:', err);
+      } finally {
+        if (progress >= 1) {
+          this.trainBtn.disabled = false;
+          this.isAnimating = false;
+        }
       }
     };
 
     animate();
+  }
+
+  resetApprentice() {
+    this.apprenticeX = 200;
+    this.apprenticeY = 250;
+    this.draw();
   }
 
   showResult(klPenalty) {

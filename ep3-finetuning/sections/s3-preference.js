@@ -124,6 +124,7 @@ class Section3 {
   }
 
   makeEqual() {
+    if (this.isAnimating) return;
     // Just advance without swiping
     this.choicesCount++;
     this.updateMeter();

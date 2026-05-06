@@ -222,7 +222,7 @@ export function init(containerEl) {
 
         loopCount++;
         draw(canvas, ctx, loopCount, maxSteps);
-        window.soundManager?.ping();
+        if (loopCount % 5 === 0) window.soundManager?.ping();
 
         animationRafId = requestAnimationFrame(animate);
       };

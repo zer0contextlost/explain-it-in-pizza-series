@@ -1,4 +1,7 @@
+let _containerEl = null;
+
 export function init(containerEl) {
+  _containerEl = containerEl;
   const html = `
     <div class="weights-wrapper">
       <div class="weights-sliders">
@@ -85,32 +88,32 @@ export function init(containerEl) {
   containerEl.innerHTML = html;
 
   const weights = {
-    w1: document.getElementById('w1'),
-    w2: document.getElementById('w2'),
-    w3: document.getElementById('w3'),
-    w4: document.getElementById('w4'),
-    w5: document.getElementById('w5'),
+    w1: containerEl.querySelector('#w1'),
+    w2: containerEl.querySelector('#w2'),
+    w3: containerEl.querySelector('#w3'),
+    w4: containerEl.querySelector('#w4'),
+    w5: containerEl.querySelector('#w5'),
   };
 
   const values = {
-    w1: document.getElementById('w1Value'),
-    w2: document.getElementById('w2Value'),
-    w3: document.getElementById('w3Value'),
-    w4: document.getElementById('w4Value'),
-    w5: document.getElementById('w5Value'),
+    w1: containerEl.querySelector('#w1Value'),
+    w2: containerEl.querySelector('#w2Value'),
+    w3: containerEl.querySelector('#w3Value'),
+    w4: containerEl.querySelector('#w4Value'),
+    w5: containerEl.querySelector('#w5Value'),
   };
 
   const layers = {
-    w1: document.getElementById('layerGarlic'),
-    w2: document.getElementById('layerSpice'),
-    w3: document.getElementById('layerSauce'),
-    w4: document.getElementById('layerCheese'),
-    w5: document.getElementById('layerHerb'),
+    w1: containerEl.querySelector('#layerGarlic'),
+    w2: containerEl.querySelector('#layerSpice'),
+    w3: containerEl.querySelector('#layerSauce'),
+    w4: containerEl.querySelector('#layerCheese'),
+    w5: containerEl.querySelector('#layerHerb'),
   };
 
-  const randomBtn = document.getElementById('randomBtn');
-  const trainBtn = document.getElementById('trainBtn');
-  const radarPolygon = document.getElementById('radarPolygon');
+  const randomBtn = containerEl.querySelector('#randomBtn');
+  const trainBtn = containerEl.querySelector('#trainBtn');
+  const radarPolygon = containerEl.querySelector('#radarPolygon');
 
   // Optimal weight values
   const optimal = {
@@ -217,20 +220,24 @@ export function init(containerEl) {
 }
 
 export function reset() {
+  if (!_containerEl) return;
+
   const weights = {
-    w1: document.getElementById('w1'),
-    w2: document.getElementById('w2'),
-    w3: document.getElementById('w3'),
-    w4: document.getElementById('w4'),
-    w5: document.getElementById('w5'),
+    w1: _containerEl.querySelector('#w1'),
+    w2: _containerEl.querySelector('#w2'),
+    w3: _containerEl.querySelector('#w3'),
+    w4: _containerEl.querySelector('#w4'),
+    w5: _containerEl.querySelector('#w5'),
   };
 
   Object.keys(weights).forEach((key) => {
-    weights[key].value = 0;
-    weights[key].dispatchEvent(new Event('input'));
+    if (weights[key]) {
+      weights[key].value = 0;
+      weights[key].dispatchEvent(new Event('input'));
+    }
   });
 
-  const trainBtn = document.getElementById('trainBtn');
+  const trainBtn = _containerEl.querySelector('#trainBtn');
   if (trainBtn) {
     trainBtn.disabled = false;
   }

@@ -1,4 +1,5 @@
 let globalCanvas, globalCtx, globalLayerPositions;
+let _containerEl = null;
 const CANVAS_PADDING = 60;
 
 function getLayerX(layerIdx) {
@@ -76,6 +77,7 @@ function drawForwardPass() {
 }
 
 export function init(containerEl) {
+  _containerEl = containerEl;
   const html = `
     <div class="backprop-wrapper">
       <div class="backprop-controls">
@@ -94,12 +96,12 @@ export function init(containerEl) {
 
   containerEl.innerHTML = html;
 
-  const canvas = document.getElementById('backpropCanvas');
+  const canvas = containerEl.querySelector('#backpropCanvas');
   const ctx = canvas.getContext('2d');
-  const spotBtn = document.getElementById('spotMistakeBtn');
-  const stepModeCheckbox = document.getElementById('stepMode');
-  const nextStepBtn = document.getElementById('nextStepBtn');
-  const explanationDiv = document.getElementById('explanation');
+  const spotBtn = containerEl.querySelector('#spotMistakeBtn');
+  const stepModeCheckbox = containerEl.querySelector('#stepMode');
+  const nextStepBtn = containerEl.querySelector('#nextStepBtn');
+  const explanationDiv = containerEl.querySelector('#explanation');
 
   let isAnimating = false;
   let stepMode = false;
@@ -117,7 +119,7 @@ export function init(containerEl) {
     globalLayerPositions = layerPositions;
     drawForwardPass();
   });
-  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('resize', () => { resizeCanvas(); drawForwardPass(); });
 
   // Layer positions
   const layerPositions = [
@@ -212,29 +214,29 @@ export function init(containerEl) {
       if (step === 0) {
         explanationDiv.innerHTML = `
           <div class="backprop-step">
-            <div class="backprop-step-title">🔴 Error Detected at Output</div>
-            <div class="backprop-step-desc">Wrong pizza prediction! Loss = 45. Starting backward pass...</div>
+            <div class="backprop-step-title">🔴 The pizza came out wrong! The judge tastes it — too salty, not enough sauce.</div>
+            <div class="backprop-step-desc">The kitchen realizes the mistake (loss = 45). Time to trace back where things went wrong...</div>
           </div>
         `;
       } else if (step === 1) {
         explanationDiv.innerHTML = `
           <div class="backprop-step">
-            <div class="backprop-step-title">📍 Error Signal Propagates</div>
-            <div class="backprop-step-desc">δ₃ = [0.3, 0.2] - error gradient shows which nodes contributed most</div>
+            <div class="backprop-step-title">📍 The topping station gets the blame first — it over-salted everything.</div>
+            <div class="backprop-step-desc">Error signal flows back to the last station. (δ₃ = [0.3, 0.2] — these nodes contributed most to the mistake.)</div>
           </div>
         `;
       } else if (step === 2) {
         explanationDiv.innerHTML = `
           <div class="backprop-step">
-            <div class="backprop-step-title">🔀 Gradient Flow</div>
-            <div class="backprop-step-desc">δ₂ = [-0.15, 0.25, 0.1] - error spreads through hidden layer 2</div>
+            <div class="backprop-step-title">🔀 The sauce station: partly responsible for the imbalance.</div>
+            <div class="backprop-step-desc">The blame spreads further back through the kitchen. (δ₂ = [-0.15, 0.25, 0.1] — hidden layer shares responsibility.)</div>
           </div>
         `;
       } else {
         explanationDiv.innerHTML = `
           <div class="backprop-step">
-            <div class="backprop-step-title">✅ Weights Updated</div>
-            <div class="backprop-step-desc">All weight gradients calculated. Model parameters adjusted to reduce error.</div>
+            <div class="backprop-step-title">✅ Each station adjusts their recipe for next time. Less salt. More sauce.</div>
+            <div class="backprop-step-desc">All stations update their techniques. (Weight gradients calculated and applied — the model has learned from its mistake.)</div>
           </div>
         `;
       }
@@ -284,11 +286,13 @@ export function init(containerEl) {
 }
 
 export function reset() {
-  const spotBtn = document.getElementById('spotMistakeBtn');
-  const stepModeCheckbox = document.getElementById('stepMode');
-  const nextStepBtn = document.getElementById('nextStepBtn');
-  const explanationDiv = document.getElementById('explanation');
-  const canvas = document.getElementById('backpropCanvas');
+  if (!_containerEl) return;
+
+  const spotBtn = _containerEl.querySelector('#spotMistakeBtn');
+  const stepModeCheckbox = _containerEl.querySelector('#stepMode');
+  const nextStepBtn = _containerEl.querySelector('#nextStepBtn');
+  const explanationDiv = _containerEl.querySelector('#explanation');
+  const canvas = _containerEl.querySelector('#backpropCanvas');
 
   if (spotBtn) spotBtn.disabled = false;
   if (stepModeCheckbox) stepModeCheckbox.checked = false;

@@ -185,15 +185,23 @@ class PromptInjectionSection {
         const noPizzaEl = this.container.querySelector('#inj-no-defense-pizza');
         const withPizzaEl = this.container.querySelector('#inj-with-defense-pizza');
 
-        noPizzaEl.textContent = attack.withoutDefense;
-        withPizzaEl.textContent = attack.withDefense;
-
         // Update responses
         const noDefenseResponse = this.container.querySelector('#inj-no-defense-response');
         const withDefenseResponse = this.container.querySelector('#inj-with-defense-response');
 
-        noDefenseResponse.textContent = '😱 "Sure thing! Free pizza for everyone!"';
-        withDefenseResponse.textContent = '🚩 "Wait, I detected suspicious instructions in your order. Making normal ' + attack.visible.toLowerCase();
+        if (this.defenseEnabled) {
+            // Defense ON: no-defense panel = fooled, with-defense panel = caught
+            noPizzaEl.textContent = attack.withoutDefense;
+            withPizzaEl.textContent = attack.withDefense;
+            noDefenseResponse.textContent = '😱 "Sure thing! Free pizza for everyone!"';
+            withDefenseResponse.textContent = '🚩 "Wait, I detected suspicious instructions in your order. Making normal ' + attack.visible.toLowerCase() + '"';
+        } else {
+            // Defense OFF: both panels show the vulnerable/fooled response
+            noPizzaEl.textContent = attack.withoutDefense;
+            withPizzaEl.textContent = attack.withoutDefense;
+            noDefenseResponse.textContent = '😱 "Sure thing! Free pizza for everyone!"';
+            withDefenseResponse.textContent = '😱 "Sure thing! Free pizza for everyone!" (no defense active)';
+        }
     }
 
     prevAttack() {
@@ -210,6 +218,8 @@ class PromptInjectionSection {
         this.timers.forEach(id => clearTimeout(id));
         this.timers = [];
         this.isAnimating = false;
+        this.currentAttackIdx = 0;
+        this.updateDisplay();
     }
 }
 

@@ -1,4 +1,7 @@
+let _containerEl = null;
+
 export function init(containerEl) {
+  _containerEl = containerEl;
   const html = `
     <div class="judge-wrapper">
       <div class="judge-pizza">
@@ -52,17 +55,17 @@ export function init(containerEl) {
 
   containerEl.innerHTML = html;
 
-  const sauceSlider = document.getElementById('sauceSlider');
-  const cheeseSlider = document.getElementById('cheeseSlider');
-  const toppingsSlider = document.getElementById('toppingsSlider');
-  const sauceValue = document.getElementById('sauceValue');
-  const cheeseValue = document.getElementById('cheeseValue');
-  const toppingsValue = document.getElementById('toppingsValue');
-  const judgeScore = document.getElementById('judgeScore');
-  const judgeFace = document.getElementById('judgeFace');
-  const judgePaddle = document.getElementById('judgePaddle');
-  const revealBtn = document.getElementById('revealBtn');
-  const pizzaSvg = document.querySelector('.pizza-svg');
+  const sauceSlider = containerEl.querySelector('#sauceSlider');
+  const cheeseSlider = containerEl.querySelector('#cheeseSlider');
+  const toppingsSlider = containerEl.querySelector('#toppingsSlider');
+  const sauceValue = containerEl.querySelector('#sauceValue');
+  const cheeseValue = containerEl.querySelector('#cheeseValue');
+  const toppingsValue = containerEl.querySelector('#toppingsValue');
+  const judgeScore = containerEl.querySelector('#judgeScore');
+  const judgeFace = containerEl.querySelector('#judgeFace');
+  const judgePaddle = containerEl.querySelector('#judgePaddle');
+  const revealBtn = containerEl.querySelector('#revealBtn');
+  const pizzaSvg = containerEl.querySelector('.pizza-svg');
 
   // Target values
   const targetSauce = 75;
@@ -148,10 +151,12 @@ export function init(containerEl) {
 }
 
 export function reset() {
-  const sauceSlider = document.getElementById('sauceSlider');
-  const cheeseSlider = document.getElementById('cheeseSlider');
-  const toppingsSlider = document.getElementById('toppingsSlider');
-  const revealBtn = document.getElementById('revealBtn');
+  if (!_containerEl) return;
+
+  const sauceSlider = _containerEl.querySelector('#sauceSlider');
+  const cheeseSlider = _containerEl.querySelector('#cheeseSlider');
+  const toppingsSlider = _containerEl.querySelector('#toppingsSlider');
+  const revealBtn = _containerEl.querySelector('#revealBtn');
 
   if (sauceSlider) sauceSlider.value = 50;
   if (cheeseSlider) cheeseSlider.value = 50;
@@ -159,7 +164,7 @@ export function reset() {
 
   if (revealBtn) revealBtn.disabled = true;
 
-  const judgeFace = document.getElementById('judgeFace');
+  const judgeFace = _containerEl.querySelector('#judgeFace');
   if (judgeFace) {
     judgeFace.classList.remove('happy', 'sad');
   }

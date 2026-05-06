@@ -77,8 +77,8 @@ class Section5 {
     // Draw 3 stations
     const stations = [
       { angle: 0, label: 'MAKE', icon: '👨‍🍳' },
-      { angle: Math.PI * 2 / 3, label: 'SCORE', icon: '🏆' },
-      { angle: Math.PI * 4 / 3, label: 'ADJUST', icon: '⚙️' }
+      { angle: Math.PI * 2 / 3, label: 'TASTE', icon: '🏆' },
+      { angle: Math.PI * 4 / 3, label: 'TWEAK RECIPE', icon: '⚙️' }
     ];
 
     stations.forEach(station => {
@@ -148,19 +148,26 @@ class Section5 {
     const cycleDuration = 1000 / speed; // Convert speed to ms per cycle
 
     const animate = () => {
-      if (this.cycles >= this.maxCycles) {
-        this.spinBtn.disabled = false;
-        this.isAnimating = false;
-        this.showComplete();
-        return;
+      try {
+        if (this.cycles >= this.maxCycles) {
+          this.showComplete();
+          return;
+        }
+
+        this.cycles++;
+        this.qualityBar += 0.3 + Math.random() * 0.5;
+        this.updateCounterDisplay();
+        this.draw();
+
+        this.animationId = setTimeout(animate, cycleDuration);
+      } catch (err) {
+        console.error('startFlywheel animation error:', err);
+      } finally {
+        if (this.cycles >= this.maxCycles) {
+          this.spinBtn.disabled = false;
+          this.isAnimating = false;
+        }
       }
-
-      this.cycles++;
-      this.qualityBar += 0.3 + Math.random() * 0.5;
-      this.updateCounterDisplay();
-      this.draw();
-
-      this.animationId = setTimeout(animate, cycleDuration);
     };
 
     animate();

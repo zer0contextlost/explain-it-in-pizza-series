@@ -44,7 +44,7 @@ export function init(containerEl) {
       <div class="validation-toggle" style="text-align: center; margin-bottom: 2rem;">
         <label class="toggle-switch" style="justify-content: center;">
           <input type="checkbox" id="validationToggle" checked>
-          <span>Tool Validation ON</span>
+          <span id="validationToggleLabel">Tool Validation ON</span>
         </label>
       </div>
 
@@ -116,9 +116,10 @@ export function init(containerEl) {
     });
   }
 
+  const validationToggleLabel = containerEl.querySelector('#validationToggleLabel');
   validationToggle.addEventListener('change', () => {
     validationEnabled = validationToggle.checked;
-    validationToggle.parentElement.textContent = validationEnabled ? 'Tool Validation ON' : 'Tool Validation OFF';
+    validationToggleLabel.textContent = validationEnabled ? 'Tool Validation ON' : 'Tool Validation OFF';
   });
 
   selectToolBtn.addEventListener('click', async () => {
