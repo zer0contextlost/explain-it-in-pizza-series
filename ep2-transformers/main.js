@@ -1,12 +1,12 @@
 import { Narrator } from './narrator.js';
-import { initEmbeddings, resetEmbeddings } from './sections/s1-embeddings.js';
-import { initPositional, resetPositional } from './sections/s2-positional.js';
-import { initAttention, resetAttention } from './sections/s3-attention.js';
-import { initSoftmax, resetSoftmax } from './sections/s4-softmax.js';
-import { initMultihead, resetMultihead } from './sections/s5-multihead.js';
-import { initFeedforward, resetFeedforward } from './sections/s6-feedforward.js';
-import { initLayernorm, resetLayernorm } from './sections/s7-layernorm.js';
-import { initTransformer, resetTransformer } from './sections/s8-transformer-block.js';
+import { init as initEmbeddings, reset as resetEmbeddings } from './sections/s1-embeddings.js';
+import { init as initPositional, reset as resetPositional } from './sections/s2-positional.js';
+import { init as initAttention, reset as resetAttention } from './sections/s3-attention.js';
+import { init as initSoftmax, reset as resetSoftmax } from './sections/s4-softmax.js';
+import { init as initMultihead, reset as resetMultihead } from './sections/s5-multihead.js';
+import { init as initFeedforward, reset as resetFeedforward } from './sections/s6-feedforward.js';
+import { init as initLayernorm, reset as resetLayernorm } from './sections/s7-layernorm.js';
+import { init as initTransformer, reset as resetTransformer } from './sections/s8-transformer-block.js';
 
 const narrator = new Narrator();
 window.narrator = narrator;
