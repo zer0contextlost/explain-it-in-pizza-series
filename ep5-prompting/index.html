@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explain It In Pizza: Prompt Engineering (Episode 5)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="episode-nav">
+        <a href="http://localhost:8765" class="nav-link">Ep1</a>
+        <a href="http://localhost:8766" class="nav-link">Ep2</a>
+        <a href="http://localhost:8767" class="nav-link">Ep3</a>
+        <a href="http://localhost:8768" class="nav-link">Ep4</a>
+        <span class="nav-link active">Ep5</span>
+    </nav>
+
+    <header class="hero">
+        <h1 class="hero-title">Explain It In Pizza: Prompt Engineering</h1>
+        <p class="hero-subtitle">How you order completely changes what the kitchen makes 🍕</p>
+        <div class="hero-visual">
+            <div class="speech-bubble morphing">
+                <span class="bubble-text">pizza</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Section 1: Zero-Shot Prompting -->
+        <section class="episode-section" id="section-1">
+            <div class="section-container">
+                <h2>🎲 Section 1: Zero-Shot Prompting</h2>
+                <p class="narrator-text">Walk up to a stranger. Say the word 'pizza.' What arrives is entirely up to chance — or rather, up to everything the model has ever seen. Zero-shot is hope dressed as engineering.</p>
+
+                <div class="section-content">
+                    <div id="s1-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Few-Shot Prompting -->
+        <section class="episode-section" id="section-2">
+            <div class="section-container">
+                <h2>📚 Section 2: Few-Shot Prompting</h2>
+                <p class="narrator-text">Three examples, carefully chosen, can communicate more than a thousand adjectives. The model sees the pattern. It does not need to be told — it needs to be shown.</p>
+
+                <div class="section-content">
+                    <div id="s2-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Chain-of-Thought -->
+        <section class="episode-section" id="section-3">
+            <div class="section-container">
+                <h2>💭 Section 3: Chain-of-Thought</h2>
+                <p class="narrator-text">The thinking chef makes fewer mistakes. Not because he is smarter, but because he catches his own errors mid-thought, before the wrong pizza reaches the pass.</p>
+
+                <div class="section-content">
+                    <div id="s3-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: System Prompt -->
+        <section class="episode-section" id="section-4">
+            <div class="section-container">
+                <h2>🎩 Section 4: System Prompt</h2>
+                <p class="narrator-text">Inside every chef's hat is a laminated card that nobody else can read. It sets the rules. The personality. The constraints. Every order is filtered through it before the chef hears a word.</p>
+
+                <div class="section-content">
+                    <div id="s4-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Temperature -->
+        <section class="episode-section" id="section-5">
+            <div class="section-container">
+                <h2>🌡️ Section 5: Temperature</h2>
+                <p class="narrator-text">Turn the dial up and the chef improvises. Turn it down and he is reliable, predictable, safe. The right temperature depends on whether you want a surprise or a sandwich.</p>
+
+                <div class="section-content">
+                    <div id="s5-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Role Prompting -->
+        <section class="episode-section" id="section-6">
+            <div class="section-container">
+                <h2>🎭 Section 6: Role Prompting</h2>
+                <p class="narrator-text">Put on the hat and become the character. The model does not pretend to be a Michelin chef — it actually thinks like one, within the confines of what it knows about Michelin chefs thinking.</p>
+
+                <div class="section-content">
+                    <div id="s6-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: Prompt Injection -->
+        <section class="episode-section" id="section-7">
+            <div class="section-container">
+                <h2>💉 Section 7: Prompt Injection</h2>
+                <p class="narrator-text">The danger is not the front door. It is the note hidden inside the order. Injection attacks smuggle instructions past the front-of-house into the kitchen itself.</p>
+
+                <div class="section-content">
+                    <div id="s7-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 8: Structured Output -->
+        <section class="episode-section" id="section-8">
+            <div class="section-container">
+                <h2>📋 Section 8: Structured Output (JSON Mode)</h2>
+                <p class="narrator-text">Sometimes you do not want a poem. You want a form. Structured output is the promise: I will give you something a machine can read, count, and act upon without interpretation.</p>
+
+                <div class="section-content">
+                    <div id="s8-container"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>Explain It In Pizza: Prompt Engineering | Episode 5</p>
+    </footer>
+
+    <script src="main.js"></script>
+    <script src="narrator.js"></script>
+    <script src="sections/s1-zero-shot.js"></script>
+    <script src="sections/s2-few-shot.js"></script>
+    <script src="sections/s3-chain-of-thought.js"></script>
+    <script src="sections/s4-system-prompt.js"></script>
+    <script src="sections/s5-temperature.js"></script>
+    <script src="sections/s6-role-prompting.js"></script>
+    <script src="sections/s7-prompt-injection.js"></script>
+    <script src="sections/s8-structured-output.js"></script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explain It In Pizza: Transformers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-logo">🍕 Explain It In Pizza</div>
+            <div class="episode-switcher">
+                <a href="http://localhost:8765" class="nav-pill">← Ep 1: ML Basics</a>
+                <span class="nav-pill active">Ep 2: Transformers</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Explain It In Pizza: Transformers</h1>
+        <p class="subtitle">How AI reads every word at once — one slice at a time 🍕</p>
+        <div class="token-grid-container">
+            <canvas id="tokenGridCanvas"></canvas>
+        </div>
+        <div class="section-tiles">
+            <div class="tile" data-section="1">
+                <div class="tile-emoji">🔤</div>
+                <div class="tile-title">Token Embeddings</div>
+            </div>
+            <div class="tile" data-section="2">
+                <div class="tile-emoji">🔢</div>
+                <div class="tile-title">Positional Encoding</div>
+            </div>
+            <div class="tile" data-section="3">
+                <div class="tile-emoji">👁️</div>
+                <div class="tile-title">Self-Attention</div>
+            </div>
+            <div class="tile" data-section="4">
+                <div class="tile-emoji">📊</div>
+                <div class="tile-title">Softmax</div>
+            </div>
+            <div class="tile" data-section="5">
+                <div class="tile-emoji">🎭</div>
+                <div class="tile-title">Multi-Head</div>
+            </div>
+            <div class="tile" data-section="6">
+                <div class="tile-emoji">⚙️</div>
+                <div class="tile-title">Feed-Forward</div>
+            </div>
+            <div class="tile" data-section="7">
+                <div class="tile-emoji">⚖️</div>
+                <div class="tile-title">LayerNorm</div>
+            </div>
+            <div class="tile" data-section="8">
+                <div class="tile-emoji">🏗️</div>
+                <div class="tile-title">Full Block</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 1: Token Embeddings -->
+    <section class="section" id="section-1" data-section="1">
+        <div class="section-header">
+            <h2>1. Token Embeddings 🔤</h2>
+            <p class="section-narration"></p>
+        </div>
+        <div class="section-content">
+            <p class="section-description">Every word gets a "flavor profile card" — taste dimensions as numbers.</p>
+            <div id="embeddings-container"></div>
+        </div>
+    </section>
+
+    <!-- Section 2: Positional Encoding -->
+    <section class="section" id="section-2" data-section="2">
+        <div class="section-header">
+            <h2>2. Positional Encoding 🔢</h2>
+            <p class="section-narration"></p>
+        </div>
+        <div class="section-content">
+            <p class="section-description">Each topping slot is numbered — position matters!</p>
+            <div id="positional-container"></div>
+        </div>
+    </section>
+
+    <!-- Section 3: Self-Attention -->
+    <section class="section" id="section-3" data-section="3">
+        <div class="section-header">
+            <h2>3. Self-Attention 👁️</h2>
+            <p class="section-narration"></p>
+        </div>
+        <div class="section-content">
+            <p class="section-description">Every topping looks at every other — all at once!</p>
+            <div id="attention-container"></div>
+        </div>
+    </section>
+
+    <!-- Section 4: Softmax -->
+    <section class="section" id="section-4" data-section="4">
+        <div class="section-header">
+            <h2>4. Attention Scores & Softmax 📊</h2>
+            <p class="section-narration"></p>
+        </div>
+        <div class="section-content">
+            <p class="section-description">Split your attention budget — softmax enforces the rules.</p>
+            <div id="softmax-container"></div>
+        </div>
+    </section>
+
+    <!-- Section 5: Multi-Head Attention -->
+    <section class="section" id="section-5" data-section="5">
+        <div class="section-header">
+            <h2>5. Multi-Head Attention 🎭</h2>
+            <p class="section-narration"></p>
+        </div>
+        <div class="section-content">
+            <p class="section-description">4 specialist critics examine the pizza simultaneously from different angles.</p>
+            <div id="multihead-container"></div>
+        </div>
+    </section>
+
+    <!-- Section 6: Feed-Forward -->
+    <section class="section" id="section-6" data-section="6">
+        <div class="section-header">
+            <h2>6. Feed-Forward Layers ⚙️</h2>
+            <p class="section-narration"></p>
+        </div>
+        <div class="section-content">
+            <p class="section-description">Each ingredient retreats to its own prep station to think alone.</p>
+            <div id="feedforward-container"></div>
+        </div>
+    </section>
+
+    <!-- Section 7: LayerNorm -->
+    <section class="section" id="section-7" data-section="7">
+        <div class="section-header">
+            <h2>7. Layer Normalization ⚖️</h2>
+            <p class="section-narration"></p>
+        </div>
+        <div class="section-content">
+            <p class="section-description">The kitchen calibration scale that re-zeros all flavors between rounds.</p>
+            <div id="layernorm-container"></div>
+        </div>
+    </section>
+
+    <!-- Section 8: Full Transformer Block -->
+    <section class="section" id="section-8" data-section="8">
+        <div class="section-header">
+            <h2>8. The Full Transformer Block 🏗️</h2>
+            <p class="section-narration"></p>
+        </div>
+        <div class="section-content">
+            <p class="section-description">One complete kitchen round — attention, prep, recalibration, and the residual always returned.</p>
+            <div id="transformer-container"></div>
+        </div>
+    </section>
+
+    <!-- Sound toggle -->
+    <div class="sound-toggle">
+        <button id="soundBtn" title="Toggle narration">🔊</button>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>

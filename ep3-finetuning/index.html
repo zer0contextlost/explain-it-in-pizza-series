@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explain It In Pizza: Fine-Tuning & RLHF</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="episode-nav">
+        <a href="http://localhost:8765" class="nav-btn">← Ep1: Tokens</a>
+        <a href="http://localhost:8766" class="nav-btn">← Ep2: Embeddings</a>
+        <span class="nav-active">Ep3: Fine-Tuning (You are here)</span>
+    </nav>
+
+    <div id="app" class="app-container">
+        <header class="hero">
+            <h1 class="hero-title">Explain It In Pizza: Fine-Tuning & RLHF</h1>
+            <p class="hero-subtitle">From culinary school to YOUR neighborhood joint 🍕</p>
+            <div class="hero-visual">
+                <div class="hero-left">
+                    <div class="chef-icon">👨‍🎓</div>
+                    <p class="hero-label">Culinary School</p>
+                    <div class="globe-animation">
+                        <span class="food-emoji food-1">🍔</span>
+                        <span class="food-emoji food-2">🍣</span>
+                        <span class="food-emoji food-3">🌮</span>
+                        <span class="food-emoji food-4">🍝</span>
+                        <span class="food-emoji food-5">🍱</span>
+                    </div>
+                </div>
+                <div class="hero-arrow">→</div>
+                <div class="hero-right">
+                    <div class="chef-icon">👨‍🍳</div>
+                    <p class="hero-label">Tony's Pizzeria</p>
+                    <div class="apron-badge">Apron</div>
+                </div>
+            </div>
+        </header>
+
+        <main class="sections-container">
+            <!-- S1: Pre-Training vs Fine-Tuning -->
+            <section id="s1" class="section" data-section="1">
+                <h2 class="section-title">S1: Pre-Training vs Fine-Tuning 🎓</h2>
+                <div class="section-content">
+                    <div class="split-screen">
+                        <div class="screen-left">
+                            <h3>Culinary School Chef</h3>
+                            <div class="blurry-globe">
+                                <span class="orbiting-food">🍔</span>
+                                <span class="orbiting-food">🍣</span>
+                                <span class="orbiting-food">🌮</span>
+                                <span class="orbiting-food">🍝</span>
+                            </div>
+                            <p class="food-label">Knows everything</p>
+                        </div>
+                        <div class="screen-right">
+                            <h3>Tony's Apprentice</h3>
+                            <div class="sharp-pizza">🍕</div>
+                            <p class="food-label">Knows pizza</p>
+                        </div>
+                    </div>
+                    <div class="slider-section">
+                        <label for="specificity-slider">Training Specificity</label>
+                        <input type="range" id="specificity-slider" min="0" max="100" value="0" class="slider">
+                        <div class="slider-display">
+                            <span id="specificity-value">0</span>/100
+                        </div>
+                    </div>
+                    <div class="order-demo">
+                        <p class="order-text">Customer: "Can I get something delicious?"</p>
+                        <button id="send-order-btn" class="action-btn">Send Order</button>
+                        <div id="order-result" class="result-display"></div>
+                    </div>
+                </div>
+                <div class="narrator-box">
+                    <p id="narrator-1" class="narrator-text"></p>
+                </div>
+            </section>
+
+            <!-- S2: Supervised Fine-Tuning -->
+            <section id="s2" class="section" data-section="2">
+                <h2 class="section-title">S2: Supervised Fine-Tuning (SFT) 🃏</h2>
+                <div class="section-content">
+                    <div class="conveyor-container">
+                        <div class="conveyor orders-belt">
+                            <span class="conveyor-label">Order Tickets</span>
+                            <div class="belt-items">
+                                <div class="order-item">Order 1</div>
+                                <div class="order-item">Order 2</div>
+                                <div class="order-item">Order 3</div>
+                            </div>
+                        </div>
+                        <div class="conveyor pizzas-belt">
+                            <span class="conveyor-label">Finished Pizzas</span>
+                            <div class="belt-items">
+                                <div class="pizza-item">🍕</div>
+                                <div class="pizza-item">🍕</div>
+                                <div class="pizza-item">🍕</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="training-controls">
+                        <button id="pair-btn" class="action-btn">Pair Them!</button>
+                        <button id="train-step-btn" class="action-btn">Train Step</button>
+                    </div>
+                    <div class="counter-display">
+                        <p id="pair-counter">Training pairs seen: 0 / 10000</p>
+                    </div>
+                    <div id="milestone-messages" class="milestone-section"></div>
+                    <div id="chef-badge" class="chef-badge hidden">Fine-Tuned! ✨</div>
+                </div>
+                <div class="narrator-box">
+                    <p id="narrator-2" class="narrator-text"></p>
+                </div>
+            </section>
+
+            <!-- S3: Preference Data -->
+            <section id="s3" class="section" data-section="3">
+                <h2 class="section-title">S3: Preference Data 👍👎</h2>
+                <div class="section-content">
+                    <div class="preference-container">
+                        <div class="pizza-card card-a">
+                            <div class="pizza-emoji">🍕</div>
+                            <p id="card-a-desc" class="card-desc"></p>
+                            <button class="preference-btn thumb-up" data-choice="a">👍</button>
+                        </div>
+                        <div class="vs-text">vs</div>
+                        <div class="pizza-card card-b">
+                            <div class="pizza-emoji">🍕</div>
+                            <p id="card-b-desc" class="card-desc"></p>
+                            <button class="preference-btn thumb-up" data-choice="b">👍</button>
+                        </div>
+                    </div>
+                    <button id="equal-btn" class="action-btn">Both Equal</button>
+                    <div class="preference-meter">
+                        <div class="meter-label">Preference Model Training</div>
+                        <div class="meter-bar">
+                            <div id="preference-progress" class="meter-fill"></div>
+                        </div>
+                        <p id="preference-count">0 / 10 choices</p>
+                    </div>
+                    <div id="pref-complete-msg" class="completion-msg hidden"></div>
+                </div>
+                <div class="narrator-box">
+                    <p id="narrator-3" class="narrator-text"></p>
+                </div>
+            </section>
+
+            <!-- S4: Reward Model -->
+            <section id="s4" class="section" data-section="4">
+                <h2 class="section-title">S4: Reward Model 🏆</h2>
+                <div class="section-content">
+                    <div class="reward-container">
+                        <div class="ingredient-toggles">
+                            <label class="toggle-label">
+                                <input type="checkbox" class="ingredient-toggle" value="sauce"> 🍅 Sauce
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox" class="ingredient-toggle" value="cheese"> 🧀 Cheese
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox" class="ingredient-toggle" value="toppings"> 🍄 Toppings
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox" class="ingredient-toggle" value="crust"> 🥖 Thick Crust
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox" class="ingredient-toggle" value="bake"> 🔥 Well-Baked
+                            </label>
+                        </div>
+                        <div class="critic-section">
+                            <svg class="critic-face" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="40" fill="#f4a460" stroke="#333" stroke-width="2"/>
+                                <circle cx="35" cy="40" r="6" fill="#000" class="critic-eye"/>
+                                <circle cx="65" cy="40" r="6" fill="#000" class="critic-eye"/>
+                                <path id="critic-mouth" d="M 35 60 Q 50 70 65 60" stroke="#000" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            </svg>
+                            <div class="score-display">
+                                <p class="score-label">Score</p>
+                                <p id="reward-score" class="score-value">0/10</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="score-breakdown" class="breakdown-section"></div>
+                    <button id="perfect-pizza-btn" class="action-btn">What would score 10?</button>
+                    <div id="perfect-reveal" class="perfect-reveal hidden"></div>
+                </div>
+                <div class="narrator-box">
+                    <p id="narrator-4" class="narrator-text"></p>
+                </div>
+            </section>
+
+            <!-- S5: RLHF Pipeline -->
+            <section id="s5" class="section" data-section="5">
+                <h2 class="section-title">S5: RLHF Pipeline 🔄</h2>
+                <div class="section-content">
+                    <canvas id="s5-canvas" class="section-canvas"></canvas>
+                    <div class="pipeline-controls">
+                        <button id="spin-flywheel-btn" class="action-btn">Spin the Flywheel!</button>
+                        <label for="speed-slider">Cycle Speed</label>
+                        <input type="range" id="speed-slider" min="0.3" max="2" step="0.1" value="1" class="slider">
+                        <div id="cycle-counter" class="counter-display">Cycles: 0</div>
+                    </div>
+                    <div id="pipeline-complete-msg" class="completion-msg hidden"></div>
+                </div>
+                <div class="narrator-box">
+                    <p id="narrator-5" class="narrator-text"></p>
+                </div>
+            </section>
+
+            <!-- S6: KL Divergence Penalty -->
+            <section id="s6" class="section" data-section="6">
+                <h2 class="section-title">S6: KL Divergence Penalty 🔗</h2>
+                <div class="section-content">
+                    <canvas id="s6-canvas" class="section-canvas"></canvas>
+                    <div class="kl-controls">
+                        <label for="kl-slider">Leash Length (KL Penalty)</label>
+                        <input type="range" id="kl-slider" min="0" max="1" step="0.1" value="0.5" class="slider">
+                        <div class="kl-display">
+                            <span id="kl-value">0.5</span>
+                        </div>
+                        <button id="train-kl-btn" class="action-btn">Train!</button>
+                    </div>
+                    <div id="kl-result" class="result-pizza"></div>
+                </div>
+                <div class="narrator-box">
+                    <p id="narrator-6" class="narrator-text"></p>
+                </div>
+            </section>
+
+            <!-- S7: Instruction Following -->
+            <section id="s7" class="section" data-section="7">
+                <h2 class="section-title">S7: Instruction Following 📋</h2>
+                <div class="section-content">
+                    <div class="instruction-mode-toggle">
+                        <button id="mode-before-btn" class="mode-btn active">Before Tuning</button>
+                        <button id="mode-after-btn" class="mode-btn">After Tuning</button>
+                    </div>
+                    <div class="instruction-demo">
+                        <div class="order-bubble">
+                            <p id="order-instruction" class="bubble-text"></p>
+                        </div>
+                        <div class="response-section">
+                            <div id="before-response" class="response-column">
+                                <h4>Before</h4>
+                                <div id="before-pizza" class="response-pizza"></div>
+                            </div>
+                            <div id="after-response" class="response-column">
+                                <h4>After</h4>
+                                <div id="after-pizza" class="response-pizza"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="instruction-nav">
+                        <button id="prev-instruction-btn" class="nav-btn">← Previous</button>
+                        <span id="instruction-counter" class="counter-text">1 / 8</span>
+                        <button id="next-instruction-btn" class="nav-btn">Next →</button>
+                    </div>
+                </div>
+                <div class="narrator-box">
+                    <p id="narrator-7" class="narrator-text"></p>
+                </div>
+            </section>
+
+            <!-- S8: Alignment -->
+            <section id="s8" class="section" data-section="8">
+                <h2 class="section-title">S8: Alignment 🎯</h2>
+                <div class="section-content">
+                    <canvas id="s8-canvas" class="section-canvas"></canvas>
+                    <div class="alignment-info">
+                        <p id="alignment-scenario" class="scenario-text"></p>
+                    </div>
+                    <div class="alignment-controls">
+                        <button id="prev-scenario-btn" class="nav-btn">← Previous</button>
+                        <span id="scenario-counter" class="counter-text">1 / 5</span>
+                        <button id="next-scenario-btn" class="nav-btn">Next →</button>
+                    </div>
+                    <div id="alignment-score-display" class="score-section">
+                        <p id="alignment-score-text">Alignment Score: 0 / 15</p>
+                    </div>
+                </div>
+                <div class="narrator-box">
+                    <p id="narrator-8" class="narrator-text"></p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>Fine-Tuning explained in pizza. Because models are like apprentices — they need focused practice.</p>
+        </footer>
+    </div>
+
+    <script src="narrator.js"></script>
+    <script src="main.js"></script>
+    <script src="sections/s1-pretraining.js"></script>
+    <script src="sections/s2-sft.js"></script>
+    <script src="sections/s3-preference.js"></script>
+    <script src="sections/s4-reward-model.js"></script>
+    <script src="sections/s5-rlhf-pipeline.js"></script>
+    <script src="sections/s6-kl-divergence.js"></script>
+    <script src="sections/s7-instruction.js"></script>
+    <script src="sections/s8-alignment.js"></script>
+</body>
+</html>

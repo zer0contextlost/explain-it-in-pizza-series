@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explain It In Pizza: Multimodal AI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-episodes">
+            <a href="http://localhost:3000/explain-ep1" class="nav-link">Ep1</a>
+            <a href="http://localhost:3000/explain-ep2" class="nav-link">Ep2</a>
+            <a href="http://localhost:3000/explain-ep3" class="nav-link">Ep3</a>
+            <a href="http://localhost:3000/explain-ep4" class="nav-link">Ep4</a>
+            <a href="http://localhost:3000/explain-ep5" class="nav-link">Ep5</a>
+            <a href="http://localhost:3000/explain-ep6" class="nav-link">Ep6</a>
+            <a href="#" class="nav-link active">Ep7</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1 class="hero-title">Explain It In Pizza: Multimodal AI</h1>
+        <p class="hero-subtitle">When the chef learns to see, hear, and draw 🍕</p>
+        <div class="hero-visual">
+            <svg class="orbital-container" viewBox="0 0 200 200" width="200" height="200">
+                <defs>
+                    <style>
+                        @keyframes orbit {
+                            from { transform: rotateZ(0deg) translateX(60px) rotateZ(0deg); }
+                            to { transform: rotateZ(360deg) translateX(60px) rotateZ(-360deg); }
+                        }
+                        .orbit-item {
+                            animation: orbit 6s linear infinite;
+                            transform-origin: 100px 100px;
+                        }
+                        .orbit-item:nth-child(2) {
+                            animation-delay: 0s;
+                        }
+                        .orbit-item:nth-child(3) {
+                            animation-delay: -2s;
+                        }
+                        .orbit-item:nth-child(4) {
+                            animation-delay: -4s;
+                        }
+                    </style>
+                </defs>
+                <circle cx="100" cy="100" r="60" fill="none" stroke="var(--color-vision)" stroke-width="1" opacity="0.2"/>
+                <g class="orbit-item">
+                    <text x="100" y="50" text-anchor="middle" font-size="32">👁️</text>
+                </g>
+                <g class="orbit-item">
+                    <text x="100" y="50" text-anchor="middle" font-size="32">👂</text>
+                </g>
+                <g class="orbit-item">
+                    <text x="100" y="50" text-anchor="middle" font-size="32">🎨</text>
+                </g>
+                <text x="100" y="110" text-anchor="middle" font-size="48" class="chef-icon">👨‍🍳</text>
+            </svg>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div id="narrator-box" class="narrator-box">
+            <span class="narrator-icon">🎙️</span>
+            <p id="narrator-text" class="narrator-text">Welcome to Multimodal AI...</p>
+        </div>
+
+        <section id="section-container"></section>
+    </main>
+
+    <script src="main.js"></script>
+</body>
+</html>

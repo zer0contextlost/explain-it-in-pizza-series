@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explain It In Pizza: RAG - Learn AI/ML with Pizza Metaphors</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <svg class="nav-pizza" viewBox="0 0 100 100" width="40" height="40">
+        <circle cx="50" cy="50" r="48" fill="#F4A261" stroke="#6B3A2A" stroke-width="2"/>
+        <line x1="50" y1="2" x2="50" y2="98" stroke="#6B3A2A" stroke-width="1.5" opacity="0.3"/>
+        <line x1="2" y1="50" x2="98" y2="50" stroke="#6B3A2A" stroke-width="1.5" opacity="0.3"/>
+        <path d="M 50 2 L 77 69 L 50 98 Z" fill="#E9C46A" opacity="0.7" class="slice slice-1"/>
+        <path d="M 77 69 L 98 50 L 50 50 Z" fill="#E63946" opacity="0.7" class="slice slice-2"/>
+        <path d="M 98 50 L 77 31 L 50 50 Z" fill="#2A9D8F" opacity="0.7" class="slice slice-3"/>
+        <path d="M 77 31 L 50 2 L 50 50 Z" fill="#E9C46A" opacity="0.7" class="slice slice-4"/>
+        <path d="M 50 50 L 50 2 L 23 31 Z" fill="#E63946" opacity="0.7" class="slice slice-5"/>
+        <path d="M 50 50 L 23 31 L 2 50 Z" fill="#2A9D8F" opacity="0.7" class="slice slice-6"/>
+        <path d="M 50 50 L 2 50 L 23 69 Z" fill="#E9C46A" opacity="0.7" class="slice slice-7"/>
+        <path d="M 50 50 L 23 69 L 50 98 Z" fill="#E63946" opacity="0.7" class="slice slice-8"/>
+      </svg>
+    </div>
+    <div class="nav-sections">
+      <button class="nav-dot" data-section="1" title="Retrieval Problem"></button>
+      <button class="nav-dot" data-section="2" title="Vector Embeddings"></button>
+      <button class="nav-dot" data-section="3" title="Vector Database"></button>
+      <button class="nav-dot" data-section="4" title="Cosine Similarity"></button>
+      <button class="nav-dot" data-section="5" title="Chunking"></button>
+      <button class="nav-dot" data-section="6" title="Context Injection"></button>
+      <button class="nav-dot" data-section="7" title="Grounding"></button>
+      <button class="nav-dot" data-section="8" title="Citation"></button>
+    </div>
+    <div class="nav-controls">
+      <button class="episode-nav" onclick="window.location.href='http://localhost:8765'">Ep1</button>
+      <button class="episode-nav" onclick="window.location.href='http://localhost:8766'">Ep2</button>
+      <button class="episode-nav" onclick="window.location.href='http://localhost:8767'">Ep3</button>
+      <button class="episode-nav active">Ep4</button>
+      <button class="sound-toggle" id="soundToggle" title="Toggle Sound">🔊</button>
+      <button class="narrator-toggle" id="narratorToggle" title="Toggle Narrator">🎙️</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Explain It In Pizza: RAG</h1>
+      <p class="hero-subtitle">Give your AI a recipe book it can actually look things up in 🍕</p>
+      <div class="hero-visual">
+        <div class="hero-chef">
+          <div class="chef-head">😕</div>
+          <div class="thinking-bubble">❓</div>
+        </div>
+        <div class="hero-cookbook">📖</div>
+        <div class="hero-chef-happy">
+          <div class="chef-head">😄</div>
+          <div class="thinking-bubble">✨</div>
+        </div>
+      </div>
+      <p class="hero-hint">Scroll down to explore RAG →</p>
+    </div>
+  </section>
+
+  <!-- Section 1: The Retrieval Problem -->
+  <section class="section" id="section-1" data-section="1">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>🤔 The Retrieval Problem</h2>
+        <p>A brilliant chef, but his memory ended in 2023. When he doesn't know, he invents.</p>
+      </div>
+      <div id="retrieval-container"></div>
+      <div class="section-summary">
+        <h4>The Problem</h4>
+        <p>The model has a knowledge cutoff. Beyond that, it guesses. And it guesses with such confidence.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Vector Embeddings -->
+  <section class="section" id="section-2" data-section="2">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>📍 Vector Embeddings for Search</h2>
+        <p>Every recipe gets flavor coordinates. Similar flavors cluster in space.</p>
+      </div>
+      <div id="embeddings-container"></div>
+      <div class="section-summary">
+        <h4>Vector Space</h4>
+        <p>Recipes aren't filed alphabetically. They're filed by how they taste — in flavor-space.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Vector Database -->
+  <section class="section" id="section-3" data-section="3">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>📚 The Vector Database</h2>
+        <p>A magical cookbook where similar recipes live next to each other.</p>
+      </div>
+      <div id="database-container"></div>
+      <div class="section-summary">
+        <h4>Semantic Organization</h4>
+        <p>Open to Margherita and the next page is Marinara. The database knows what belongs together.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Cosine Similarity -->
+  <section class="section" id="section-4" data-section="4">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>📐 Cosine Similarity</h2>
+        <p>Direction matters. Not size. A personal and party pepperoni point the same way.</p>
+      </div>
+      <div id="cosine-container"></div>
+      <div class="section-summary">
+        <h4>The Angle is Everything</h4>
+        <p>Two recipes pointing in the same flavor direction have high similarity, even if one is bigger.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Chunking -->
+  <section class="section" id="section-5" data-section="5">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>📄 Chunking Documents</h2>
+        <p>Nonna's 200-page memoir is too long. Tear it into recipe-card-sized chunks.</p>
+      </div>
+      <div id="chunking-container"></div>
+      <div class="section-summary">
+        <h4>Bite-Sized Knowledge</h4>
+        <p>The chef's pocket can't fit a whole chapter. But a single recipe card? Perfect.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: Context Injection -->
+  <section class="section" id="section-6" data-section="6">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>💉 Context Window Injection</h2>
+        <p>Before cooking, tape the recipe card to his cutting board. He cannot miss it.</p>
+      </div>
+      <div id="context-container"></div>
+      <div class="section-summary">
+        <h4>Explicit is Better</h4>
+        <p>With RAG, the relevant knowledge is right there. No guessing. No hallucinating.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 7: Grounding -->
+  <section class="section" id="section-7" data-section="7">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>⚓ Grounding</h2>
+        <p>Side-by-side: the ungrounded chef invents. The grounded chef cites sources.</p>
+      </div>
+      <div id="grounding-container"></div>
+      <div class="section-summary">
+        <h4>Verifiable Claims</h4>
+        <p>Grounded answers point at their sources. Ungrounded ones point at thin air.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 8: Citation -->
+  <section class="section" id="section-8" data-section="8">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>🏴 Citation</h2>
+        <p>Every slice arrives with a tiny flag stuck in it. Follow the flag to the source.</p>
+      </div>
+      <div id="citation-container"></div>
+      <div class="section-summary">
+        <h4>Trust Through Verification</h4>
+        <p>The flag in the pizza slice is a promise: I can prove this. Follow it, read the source, and judge.</p>
+      </div>
+    </div>
+  </section>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

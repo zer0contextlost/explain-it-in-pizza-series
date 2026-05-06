@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explain It In Pizza: AI Agents - Learn Tool Use through Pizza Metaphors</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <svg class="nav-pizza" viewBox="0 0 100 100" width="40" height="40">
+        <circle cx="50" cy="50" r="48" fill="#F4A261" stroke="#6B3A2A" stroke-width="2"/>
+        <line x1="50" y1="2" x2="50" y2="98" stroke="#6B3A2A" stroke-width="1.5" opacity="0.3"/>
+        <line x1="2" y1="50" x2="98" y2="50" stroke="#6B3A2A" stroke-width="1.5" opacity="0.3"/>
+        <path d="M 50 2 L 77 69 L 50 98 Z" fill="#E9C46A" opacity="0.7" class="slice slice-1"/>
+        <path d="M 77 69 L 98 50 L 50 50 Z" fill="#E63946" opacity="0.7" class="slice slice-2"/>
+        <path d="M 98 50 L 77 31 L 50 50 Z" fill="#2A9D8F" opacity="0.7" class="slice slice-3"/>
+        <path d="M 77 31 L 50 2 L 50 50 Z" fill="#E9C46A" opacity="0.7" class="slice slice-4"/>
+        <path d="M 50 50 L 50 2 L 23 31 Z" fill="#E63946" opacity="0.7" class="slice slice-5"/>
+        <path d="M 50 50 L 23 31 L 2 50 Z" fill="#2A9D8F" opacity="0.7" class="slice slice-6"/>
+        <path d="M 50 50 L 2 50 L 23 69 Z" fill="#E9C46A" opacity="0.7" class="slice slice-7"/>
+        <path d="M 50 50 L 23 69 L 50 98 Z" fill="#E63946" opacity="0.7" class="slice slice-8"/>
+      </svg>
+    </div>
+    <div class="nav-sections">
+      <button class="nav-dot" data-section="1" title="ReAct Loop"></button>
+      <button class="nav-dot" data-section="2" title="Tool Calling"></button>
+      <button class="nav-dot" data-section="3" title="Planning"></button>
+      <button class="nav-dot" data-section="4" title="Short-Term Memory"></button>
+      <button class="nav-dot" data-section="5" title="Long-Term Memory"></button>
+      <button class="nav-dot" data-section="6" title="Multi-Agent"></button>
+      <button class="nav-dot" data-section="7" title="Infinite Loop"></button>
+      <button class="nav-dot" data-section="8" title="Hallucinated Tools"></button>
+    </div>
+    <div class="nav-controls">
+      <button class="sound-toggle" id="soundToggle" title="Toggle Sound">🔊</button>
+      <button class="narrator-toggle" id="narratorToggle" title="Toggle Narrator">🎙️</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Explain It In Pizza: AI Agents</h1>
+      <p class="hero-subtitle">When the chef leaves the kitchen and starts making phone calls 🍕</p>
+      <div class="hero-visual">
+        <svg class="hero-animation" viewBox="0 0 400 300" width="400" height="300">
+          <!-- Kitchen counter -->
+          <rect x="10" y="150" width="100" height="120" fill="#D4A574" stroke="#6B3A2A" stroke-width="2"/>
+          <rect x="20" y="140" width="80" height="20" fill="#8B7355"/>
+
+          <!-- Fridge -->
+          <rect x="320" y="150" width="70" height="120" fill="#E0E0E0" stroke="#6B3A2A" stroke-width="2"/>
+          <rect x="325" y="155" width="60" height="110" fill="#F5F5F5"/>
+          <circle cx="383" cy="180" r="3" fill="#999"/>
+
+          <!-- Chef -->
+          <g class="chef" id="chefAnimated">
+            <!-- Head -->
+            <circle cx="80" cy="100" r="15" fill="#F4A261" stroke="#6B3A2A" stroke-width="1"/>
+            <!-- Chef hat -->
+            <rect x="65" y="75" width="30" height="20" fill="white" stroke="#6B3A2A" stroke-width="1"/>
+            <ellipse cx="80" cy="75" rx="15" ry="5" fill="white"/>
+            <!-- Body -->
+            <rect x="65" y="115" width="30" height="35" fill="white" stroke="#6B3A2A" stroke-width="1"/>
+            <!-- Legs -->
+            <line x1="72" y1="150" x2="72" y2="175" stroke="#6B3A2A" stroke-width="2"/>
+            <line x1="88" y1="150" x2="88" y2="175" stroke="#6B3A2A" stroke-width="2"/>
+            <!-- Right arm (reaching) -->
+            <line x1="95" y1="120" x2="140" y2="100" stroke="#F4A261" stroke-width="3"/>
+            <!-- Left arm -->
+            <line x1="65" y1="120" x2="50" y2="130" stroke="#F4A261" stroke-width="3"/>
+          </g>
+
+          <!-- Phone (appears during tool call) -->
+          <g class="phone" id="phone" opacity="0">
+            <rect x="140" y="80" width="30" height="50" fill="#333" stroke="#000" stroke-width="1" rx="3"/>
+            <rect x="145" y="90" width="20" height="25" fill="#87CEEB"/>
+          </g>
+
+          <!-- Thought bubble -->
+          <g class="thought-bubble" id="thoughtBubble" opacity="0">
+            <ellipse cx="120" cy="40" rx="50" ry="30" fill="white" stroke="#6B3A2A" stroke-width="1"/>
+            <circle cx="100" cy="65" r="8" fill="white" stroke="#6B3A2A" stroke-width="1"/>
+            <circle cx="90" cy="78" r="5" fill="white" stroke="#6B3A2A" stroke-width="1"/>
+          </g>
+        </svg>
+      </div>
+      <p class="hero-hint">Chef animation showing the ReAct cycle →</p>
+    </div>
+  </section>
+
+  <!-- Section 1: ReAct Loop -->
+  <section class="section" id="section-1" data-section="1">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>♻️ The ReAct Loop: Think → Act → Observe → Repeat</h2>
+        <p>Pizza metaphor: The chef doesn't know the full recipe. He thinks, tries, observes, and adjusts.</p>
+      </div>
+      <div id="react-loop-container"></div>
+      <div class="section-summary">
+        <h4>How It Works</h4>
+        <p>Start the order and watch the agent cycle through THINK (decide what to do), ACT (attempt it), and OBSERVE (see what happened). This loop repeats until the pizza is complete. Use Step Mode to control it manually.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Tool Calling -->
+  <section class="section" id="section-2" data-section="2">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>🔧 Tool Calling: Extending the Chef's Hands</h2>
+        <p>Pizza metaphor: The chef can't grow tomatoes. But he can call the supplier, use the oven, or ring up the bill.</p>
+      </div>
+      <div id="tool-calling-container"></div>
+      <div class="section-summary">
+        <h4>How It Works</h4>
+        <p>Tools are the chef's interface to the world. Each tool has a purpose. Try disabling tools to see how the chef's plans adapt or fail. Tools are how agents do more than think.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Planning -->
+  <section class="section" id="section-3" data-section="3">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>📝 Planning: The Whiteboard Before Action</h2>
+        <p>Pizza metaphor: The chef writes a numbered checklist before touching the dough.</p>
+      </div>
+      <div id="planning-container"></div>
+      <div class="section-summary">
+        <h4>How It Works</h4>
+        <p>Good planning is slower upfront but faster overall. Watch the chef plan each order with numbered steps, then execute them. Compare with the chaotic "no planning" mode to see why structure matters.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Short-Term Memory -->
+  <section class="section" id="section-4" data-section="4">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>📝 Short-Term Memory: The Notepad in the Apron</h2>
+        <p>Pizza metaphor: Notes in the chef's apron pocket. Forgotten when the shift ends.</p>
+      </div>
+      <div id="memory-short-container"></div>
+      <div class="section-summary">
+        <h4>How It Works</h4>
+        <p>The context window is limited. When new facts arrive, old ones fall off the bottom of the notepad. This is why agents struggle with long conversations — they forget what was said at the start.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Long-Term Memory -->
+  <section class="section" id="section-5" data-section="5">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>📖 Long-Term Memory: The Leather-Bound Regulars Book</h2>
+        <p>Pizza metaphor: Customer records stored under the counter. Persists forever.</p>
+      </div>
+      <div id="memory-long-container"></div>
+      <div class="section-summary">
+        <h4>How It Works</h4>
+        <p>Save important facts to long-term memory and they survive context shifts. Customers return after a new shift, and the chef remembers their preferences. This is external memory — databases, vector stores, knowledge graphs.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: Multi-Agent Systems -->
+  <section class="section" id="section-6" data-section="6">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>👥 Multi-Agent Systems: The Whole Brigade</h2>
+        <p>Pizza metaphor: Different chefs specializing in different roles.</p>
+      </div>
+      <div id="multi-agent-container"></div>
+      <div class="section-summary">
+        <h4>How It Works</h4>
+        <p>Sous Chef plans. Dough Master stretches. Topping Specialist garnishes. Oven Tender bakes. Order ticket flows through the brigade. When one station is disabled, the pipeline breaks. This is why specialized agents are powerful at scale.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 7: Infinite Loop -->
+  <section class="section" id="section-7" data-section="7">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>🔁 Infinite Loops: Chef in a Broken Record</h2>
+        <p>Pizza metaphor: Chef thinks "I need cheese" → opens fridge → forgets why → thinks "I need cheese" → opens fridge...</p>
+      </div>
+      <div id="infinite-loop-container"></div>
+      <div class="section-summary">
+        <h4>How It Works</h4>
+        <p>When the agent gets stuck, it can loop forever. Set a max-steps limit to catch this. Without circuit breakers, the model can waste tokens and spin wheels indefinitely.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 8: Hallucinated Tools -->
+  <section class="section" id="section-8" data-section="8">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>👻 Hallucinated Tools: Confident in Fake Capabilities</h2>
+        <p>Pizza metaphor: Chef confidently picks up an imaginary truffle injector and swears it worked.</p>
+      </div>
+      <div id="hallucinated-tools-container"></div>
+      <div class="section-summary">
+        <h4>How It Works</h4>
+        <p>The most dangerous failure is when the model hallucinates a tool that doesn't exist, calls it, fabricates a result, and reports success. Enable tool validation to catch this invisible mistake.</p>
+      </div>
+    </div>
+  </section>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

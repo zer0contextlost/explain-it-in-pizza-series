@@ -1,0 +1,525 @@
+:root {
+    --color-tomato: #E63946;
+    --color-crust: #F4A261;
+    --color-cheese: #E9C46A;
+    --color-brown: #6B3A2A;
+    --color-basil: #2A9D8F;
+    --color-cream: #FFF8F0;
+    --color-charcoal: #264653;
+    --color-dough: #FDEBD0;
+    --color-attention: #7B2D8B;
+    --spacing-unit: 1rem;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--color-cream);
+    color: var(--color-charcoal);
+    line-height: 1.6;
+}
+
+/* Navbar */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 3px solid var(--color-tomato);
+    padding: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-logo {
+    font-family: 'Pacifico', cursive;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-tomato);
+}
+
+.episode-switcher {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.nav-pill {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: 2px solid var(--color-brown);
+    background: white;
+    color: var(--color-brown);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.nav-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.nav-pill.active {
+    background: var(--color-tomato);
+    color: white;
+    border-color: var(--color-tomato);
+}
+
+/* Hero Section */
+.hero {
+    padding: 4rem 2rem;
+    text-align: center;
+    background: linear-gradient(135deg, var(--color-cream) 0%, #FFF0E6 100%);
+    border-bottom: 3px solid var(--color-crust);
+}
+
+.hero h1 {
+    font-family: 'Pacifico', cursive;
+    font-size: 3.5rem;
+    color: var(--color-tomato);
+    margin-bottom: 0.5rem;
+    animation: fadeInDown 0.6s ease-out;
+}
+
+.hero .subtitle {
+    font-size: 1.3rem;
+    color: var(--color-charcoal);
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+
+.token-grid-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+#tokenGridCanvas {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    height: 300px;
+}
+
+/* Section Tiles Grid */
+.section-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 0 2rem;
+}
+
+.tile {
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    border: 2px solid var(--color-brown);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.tile:nth-child(1) { animation-delay: 0.3s; }
+.tile:nth-child(2) { animation-delay: 0.35s; }
+.tile:nth-child(3) { animation-delay: 0.4s; }
+.tile:nth-child(4) { animation-delay: 0.45s; }
+.tile:nth-child(5) { animation-delay: 0.5s; }
+.tile:nth-child(6) { animation-delay: 0.55s; }
+.tile:nth-child(7) { animation-delay: 0.6s; }
+.tile:nth-child(8) { animation-delay: 0.65s; }
+
+.tile:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    background: var(--color-cheese);
+}
+
+.tile-emoji {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.tile-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--color-charcoal);
+}
+
+/* Sections */
+.section {
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.section-header {
+    margin-bottom: 2rem;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInDown 0.5s ease-out forwards;
+}
+
+.section-header h2 {
+    font-family: 'Pacifico', cursive;
+    font-size: 2.5rem;
+    color: var(--color-tomato);
+    margin-bottom: 0.5rem;
+}
+
+.section-narration {
+    font-size: 1rem;
+    color: var(--color-charcoal);
+    font-style: italic;
+    max-width: 600px;
+    margin: 1rem auto 0;
+    line-height: 1.8;
+}
+
+.section-description {
+    font-size: 1.1rem;
+    color: var(--color-brown);
+    margin-bottom: 2rem;
+    font-weight: 600;
+}
+
+.section-content {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.5s ease-out 0.1s forwards;
+}
+
+/* Token Pills */
+.token-pill {
+    font-family: 'Fredoka One', sans-serif;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    border: 2px solid var(--color-brown);
+    background: var(--color-cheese);
+    color: var(--color-charcoal);
+    cursor: pointer;
+    font-size: 0.95rem;
+    margin: 0.5rem 0.25rem;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.token-pill:hover {
+    transform: scale(1.05);
+}
+
+.token-pill.selected {
+    background: var(--color-tomato);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
+}
+
+/* Buttons */
+button {
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    border: 2px solid var(--color-brown);
+    background: var(--color-cheese);
+    color: var(--color-charcoal);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+    background: var(--color-crust);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+/* Sliders */
+input[type="range"] {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-dough);
+    outline: none;
+    -webkit-appearance: none;
+    accent-color: var(--color-tomato);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-tomato);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-tomato);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Canvas containers */
+canvas {
+    display: block;
+    border-radius: 8px;
+    background: white;
+    border: 2px solid var(--color-dough);
+    max-width: 100%;
+    height: auto;
+}
+
+/* Sound toggle */
+.sound-toggle {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 100;
+}
+
+#soundBtn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    padding: 0;
+    font-size: 1.5rem;
+    background: var(--color-tomato);
+    border: none;
+    color: white;
+    box-shadow: 0 4px 12px rgba(230, 57, 70, 0.4);
+    transition: all 0.2s ease;
+}
+
+#soundBtn:hover {
+    transform: scale(1.1);
+}
+
+/* Details/Accordion */
+details {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: var(--color-dough);
+    border-radius: 8px;
+    border-left: 4px solid var(--color-tomato);
+}
+
+summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--color-charcoal);
+    transition: color 0.2s ease;
+}
+
+summary:hover {
+    color: var(--color-tomato);
+}
+
+details[open] summary {
+    color: var(--color-tomato);
+    margin-bottom: 1rem;
+}
+
+details p {
+    line-height: 1.8;
+    color: var(--color-charcoal);
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes scale-pulse {
+    0% {
+        transform: scale(0.8);
+    }
+    50% {
+        transform: scale(1.3);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .section-tiles {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .section {
+        padding: 2rem 1rem;
+    }
+
+    #tokenGridCanvas {
+        height: 200px;
+    }
+
+    canvas {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-content {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .hero .subtitle {
+        font-size: 1rem;
+    }
+
+    .section-tiles {
+        grid-template-columns: 1fr;
+    }
+
+    .episode-switcher {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .nav-pill {
+        font-size: 0.9rem;
+    }
+}
+
+/* Utility */
+.flex {
+    display: flex;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gap-1 { gap: 1rem; }
+.gap-2 { gap: 2rem; }
+
+.text-center { text-align: center; }
+.mt-1 { margin-top: 1rem; }
+.mt-2 { margin-top: 2rem; }
+.mb-1 { margin-bottom: 1rem; }
+.mb-2 { margin-bottom: 2rem; }
+
+/* Inline SVG styling */
+svg {
+    display: block;
+}
+
+.embedding-bars {
+    width: 100%;
+    height: auto;
+    margin: 0.5rem 0;
+}
